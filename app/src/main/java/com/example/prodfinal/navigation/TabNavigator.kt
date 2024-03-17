@@ -5,17 +5,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -25,26 +23,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prodfinal.R
-import com.example.prodfinal.domain.model.TabBarItem
+import com.example.prodfinal.domain.model.TabBarItemModel
 import com.example.prodfinal.presentation.screen.MainScreen
 import com.example.prodfinal.presentation.screen.ToDoScreen
 import com.example.prodfinal.presentation.screen.UserInfoScreen
 
+// Индекс открытой страницы в массиве
+var selectedItem = mutableStateOf(0)
+// Route открытой страницы
+var currentRoute = mutableStateOf("main_screen")
+
 @Composable
-fun TabNavigator() {
+fun TabNavigator(stackNavigator: NavController) {
     // Все страницы в таб-навигации
     val tabBarItems = listOf(
-        TabBarItem(
+        TabBarItemModel(
             title = "Главная",
             icon = painterResource(R.drawable.home_icon),
             "main_screen"
         ),
-        TabBarItem(
+        TabBarItemModel(
             title = "Мой досуг",
             icon = painterResource(R.drawable.list_icon),
             "todo_screen"
         ),
-        TabBarItem(
+        TabBarItemModel(
             title = "Профиль",
             icon = painterResource(R.drawable.user_icon),
             "user_info_screen"
@@ -68,19 +71,14 @@ fun TabNavigator() {
                 innerPadding.calculateBottomPadding()
             )
         ) {
-            Navigations(navController = navController)
+            Navigations(navController = navController, stackNavigator)
         }
     }
 }
 
 // Таб бар
 @Composable
-fun TabView (navController: NavController, tabs: List<TabBarItem>) {
-    // Индекс открытой страницы в массиве
-    var selectedItem = remember { mutableStateOf(0) }
-    // Route открытой страницы
-    var currentRoute = remember { mutableStateOf("main_screen") }
-
+fun TabView (navController: NavController, tabs: List<TabBarItemModel>) {
     NavigationBar (
         contentColor = Color.Transparent,
         containerColor = colorResource(id = R.color.background)
@@ -120,16 +118,16 @@ fun TabView (navController: NavController, tabs: List<TabBarItem>) {
 
 // Navigation graph
 @Composable
-fun Navigations(navController: NavHostController) {
-    NavHost(navController, startDestination = "main_screen") {
+fun Navigations(navController: NavHostController, stackNavigator: NavController) {
+    NavHost(navController, startDestination = currentRoute.value) {
         composable("main_screen") {
-            MainScreen()
+            MainScreen(LocalContext.current)
         }
         composable("todo_screen") {
             ToDoScreen()
         }
         composable("user_info_screen") {
-            UserInfoScreen()
+            UserInfoScreen(LocalContext.current, stackNavigator)
         }
     }
 }
