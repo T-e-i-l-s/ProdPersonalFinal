@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -49,8 +50,14 @@ val randomUser = mutableStateOf(
 val username = mutableStateOf("")
 val password = mutableStateOf("")
 
+var mode: String? = null
+
 @Composable
 fun AuthorisationScreen(context: Context, navController: NavController) {
+    var modeIsLoaded = remember {
+        mutableStateOf(false)
+    }
+
     if (!isUserLoading) {
         isUserLoading = true
         GetRandomUser().getRandomUser(
@@ -60,8 +67,10 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
         }
     }
 
-
-    val mode = navController.currentBackStackEntry?.arguments?.getString("mode")
+    if (!modeIsLoaded.value) {
+        modeIsLoaded.value = true
+        mode = navController.currentBackStackEntry?.arguments?.getString("mode")
+    }
 
     Column(
         modifier = Modifier

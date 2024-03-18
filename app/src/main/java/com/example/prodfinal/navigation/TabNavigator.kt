@@ -121,10 +121,10 @@ fun TabView (navController: NavController, tabs: List<TabBarItemModel>) {
 fun Navigations(navController: NavHostController, stackNavigator: NavController) {
     NavHost(navController, startDestination = currentRoute.value) {
         composable("main_screen") {
-            MainScreen(LocalContext.current)
+            MainScreen(LocalContext.current, stackNavigator)
         }
         composable("todo_screen") {
-            ToDoScreen()
+            ToDoScreen(LocalContext.current, stackNavigator)
         }
         composable("user_info_screen") {
             UserInfoScreen(LocalContext.current, stackNavigator)

@@ -1,9 +1,11 @@
 package com.example.prodfinal.domain.model
 
-data class RecomendationModel(
+data class FullRecomendationModel(
     val id: String,
     val title: String,
-    val image: String,
+//    val description: String,
+    val photos: ArrayList<String>,
     val address: String,
     val category: ArrayList<String>,
+    val mail: String?,
 )

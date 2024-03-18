@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prodfinal.presentation.screen.AuthorisationScreen
+import com.example.prodfinal.presentation.screen.CreateToDoScreen
+import com.example.prodfinal.presentation.screen.RecomendationScreen
 
 @Composable
 fun StackNavigator () {
@@ -23,6 +25,16 @@ fun StackNavigator () {
             "authorization_screen/{mode}"
         ) {
             AuthorisationScreen(LocalContext.current, navController)
+        }
+        composable(
+            "recomendation_screen/{fsq_id}"
+        ) {
+            RecomendationScreen(LocalContext.current, navController)
+        }
+        composable(
+            "create_todo_screen/{mode}"
+        ) {
+            CreateToDoScreen(LocalContext.current, navController)
         }
     }
 }

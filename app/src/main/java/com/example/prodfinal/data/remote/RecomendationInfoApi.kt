@@ -5,20 +5,19 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.prodfinal.domain.model.FullRecomendationModel
 import com.example.prodfinal.domain.model.RecomendationModel
-import com.example.prodfinal.domain.model.WeatherModel
 import org.json.JSONObject
 
-class RecomendationApi {
-    fun getRecomendations (
+class RecomendationInfoApi {
+    fun getRecomendationInfo(
         context: Context,
-        lat: Double,
-        lon: Double,
-        onFinish: (MutableList<RecomendationModel>) -> Unit
+        fsqId: String,
+        onFinish: (FullRecomendationModel) -> Unit
     ) {
 
         // URL запроса
-        val url = "https://api.foursquare.com/v3/places/nearby?fields=name%2Cphotos%2Ccategories%2Clocation%2Cfsq_id&ll=$lat%2C$lon"
+        val url = "https://api.foursquare.com/v3/places/$fsqId?fields=fsq_id%2Cname%2Cphotos%2Clocation%2Ccategories%2Cemail"
 
         // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
@@ -28,13 +27,12 @@ class RecomendationApi {
             Request.Method.GET,
             url,
             { response ->
-            Log.e("RECOMENDATIONS123",response)
                 // Обрабатываем его и отдаем виджету
-                handleResponse(response, onFinish)
+                handleResponse(JSONObject(response), onFinish)
             },
             { error ->
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                Log.e("RECOMENDATION_API_ERROR", "ERROR")
+                Log.e("RECOMENDATION_INFO_API_ERROR", "ERROR")
             }
         ) {
             override fun getHeaders(): MutableMap<String, String> {
@@ -49,53 +47,46 @@ class RecomendationApi {
         requestQueue.add(stringRequest)
     }
 
-
-    // Функция, которая обрабатывает json всех локаций в mutableListOf<RecomendationModel>
-    fun handleResponse(
-        response: String,
-        onFinish: (MutableList<RecomendationModel>) -> Unit
-    ) {
-        val json = JSONObject(response)
-        val recomendationsArray = json.getJSONArray("results")
-        val recomendations = mutableListOf<RecomendationModel>()
-        for(i in 0..recomendationsArray.length()-1) {
-            val recomendation: RecomendationModel =
-                handleRecomendationJson(recomendationsArray.getJSONObject(i))
-            recomendations.add(recomendation)
-        }
-        onFinish(recomendations)
-    }
-
     // Функция, которая обрабатывает json локации в RecomendationModel
-    fun handleRecomendationJson(
-        response: JSONObject
-    ) : RecomendationModel {
+    fun handleResponse(
+        response: JSONObject,
+        onFinish: (FullRecomendationModel) -> Unit
+    ) {
         val id = response.getString("fsq_id")
         val title = response.getString("name")
+        var email: String? = null
+        if (response.has("email")) {
+            email = response.getString("email")
+        }
 
         val categories = ArrayList<String>()
         val categoryArray = response.getJSONArray("categories")
-        for(i in 0..categoryArray.length()-1) {
+        for (i in 0..categoryArray.length()-1) {
             val category = categoryArray.getJSONObject(i)
             categories.add(category.getString("short_name"))
         }
 
-        val imagesArr = response.getJSONArray("photos")
-        var image = ""
-        if (imagesArr.length() > 0) {
-            val imageObj = imagesArr.getJSONObject(0)
-            image = imageObj.getString("prefix") + "original" + imageObj.getString("suffix")
+        val images = ArrayList<String>()
+        val imagesArray = response.getJSONArray("photos")
+        for (i in 0..imagesArray.length()-1) {
+            val image = imagesArray.getJSONObject(i)
+            images.add(
+                image.getString("prefix") + "original" + image.getString("suffix")
+            )
         }
 
         val locationObj = response.getJSONObject("location")
         val address = locationObj.getString("formatted_address")
 
-        return RecomendationModel(
-            id,
-            title,
-            image,
-            address,
-            categories
+        onFinish(
+            FullRecomendationModel(
+                id,
+                title,
+                images,
+                address,
+                categories,
+                email,
+            )
         )
     }
 }

@@ -16,15 +16,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.prodfinal.R
+import com.example.prodfinal.data.local.AddToDo
+import com.example.prodfinal.data.local.GetToDoArray
 import com.example.prodfinal.data.location.Location
 import com.example.prodfinal.data.repository.RecomentadionRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
 import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.RecomendationModel
+import com.example.prodfinal.domain.model.ToDoItemModel
 import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.WeatherView
+import com.google.gson.Gson
+import org.json.JSONObject
 
 // Начата ли загрузка данных
 var isWeatherLoading = false
@@ -49,7 +55,7 @@ val weatherInfo =
 var recomendations = mutableStateOf(mutableListOf<RecomendationModel>())
 
 @Composable
-fun MainScreen(context: Context) {
+fun MainScreen(context: Context, stackNavigator: NavController) {
     if (!isWeatherLoading) { // Если данные не загружены
         isWeatherLoading = true
         // Получаем данные о геолокации
@@ -60,9 +66,9 @@ fun MainScreen(context: Context) {
                 // Получаем погоду на данных координатах
                 WeatherRepositoryImpl().getWeather(
                     context,
-                    55.78, 49.12
-//                    locationResponse.latitude,
-//                    locationResponse.longtitude
+//                    55.78, 49.12
+                    locationResponse.latitude,
+                    locationResponse.longtitude
                 ) { weatherResponse ->
                     weatherInfo.value = weatherResponse // Сохраняем данные о погоде
                     weatherLoadingStatus.value = "READY" // Меняем статус виджета на "загружен"
@@ -71,10 +77,11 @@ fun MainScreen(context: Context) {
                 // Получаем рекомендации на данных координатах
                 RecomentadionRepositoryImpl().getRecomendations(
                     context,
-                    55.78, 49.12
-//                    locationResponse.latitude,
-//                    locationResponse.longtitude
+//                    55.78, 49.12
+                    locationResponse.latitude,
+                    locationResponse.longtitude
                 ) { recomendationsResponse ->
+//                    Log.e("RECOMENDATIONS", recomendationsResponse.toString())
                     recomendations.value = recomendationsResponse
                 }
             }
@@ -105,7 +112,7 @@ fun MainScreen(context: Context) {
                         .fillMaxWidth()
                         .padding(0.dp, 0.dp, 0.dp, 10.dp)
                 ) {
-                    RecomendationView(recomendation = item)
+                    RecomendationView(recomendation = item, stackNavigator)
                 }
             }
         }

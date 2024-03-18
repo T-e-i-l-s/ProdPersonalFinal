@@ -37,7 +37,7 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        if (status == "READY") { // Если дданные получены
+        if (status == "READY") { // Если данные получены
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
