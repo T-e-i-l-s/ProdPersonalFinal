@@ -4,10 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
 import com.example.prodfinal.domain.model.LocationModel
 import com.google.android.gms.location.LocationRequest
@@ -15,14 +11,16 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
-import kotlinx.coroutines.delay
 
+// Класс для работы с локацией
+
+@Suppress("DEPRECATION")
 class Location(val context: Context) {
-    // Функция получения локации пользователя
+    // Функция для проверки разрешений и запроса локации
     fun getLocation(onFinish: (result: LocationModel) -> Unit) {
-        if (!checkPermission()) {
-            // Запрашиваем разрешения на голокацию
-            requestPermissions(onFinish)
+        if (!checkPermission()) { // Если нет разрешения на использование геолокации
+            // Запрашиваем разрешения на геолокацию
+            requestPermissions()
             onFinish(
                 LocationModel(
                     false,
@@ -32,11 +30,12 @@ class Location(val context: Context) {
             )
             return
         }
-
+        // Делаем запрос на локацию
         locationRequest(onFinish)
     }
 
-    fun locationRequest (onFinish: (result: LocationModel) -> Unit) {
+    // Функция получения локации
+    private fun locationRequest(onFinish: (result: LocationModel) -> Unit) {
         // Проверяем разрешения на использование геолокации
         if (checkPermission()) {
             // Проверяем голокацию
@@ -48,6 +47,7 @@ class Location(val context: Context) {
                     LocationRequest.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
                         override fun onCanceledRequested(p0: OnTokenCanceledListener) =
                             CancellationTokenSource().token
+
                         override fun isCancellationRequested() = false
                     }
                 ).addOnCompleteListener { task ->
@@ -74,7 +74,7 @@ class Location(val context: Context) {
     }
 
     // Функция, которая проверяет разрешения
-    fun checkPermission(): Boolean {
+    private fun checkPermission(): Boolean {
         val permission1 = ActivityCompat.checkSelfPermission(
             context,
             android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -88,7 +88,7 @@ class Location(val context: Context) {
     }
 
     // Функция, которая проверяем возможность использования геолокации
-    fun isLocationEnabled(): Boolean {
+    private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager =
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
@@ -96,7 +96,7 @@ class Location(val context: Context) {
     }
 
     // Функция, которая запрашивает разрешения на использование геолокации
-    fun requestPermissions(onFinish: (result: LocationModel) -> Unit) {
+    private fun requestPermissions() {
         val permissions = arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION

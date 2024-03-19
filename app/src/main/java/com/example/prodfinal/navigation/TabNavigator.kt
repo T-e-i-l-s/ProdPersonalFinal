@@ -33,6 +33,7 @@ var selectedItem = mutableStateOf(0)
 // Route открытой страницы
 var currentRoute = mutableStateOf("main_screen")
 
+// Граф Tab навигации(между графом с Tab навигацией и вспомогательными экранами)
 @Composable
 fun TabNavigator(stackNavigator: NavController) {
     // Все страницы в таб-навигации

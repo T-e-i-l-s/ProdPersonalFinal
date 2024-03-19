@@ -1,6 +1,5 @@
 package com.example.prodfinal.presentation.screen
 
-import android.content.ClipData.Item
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,10 +19,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -37,12 +36,10 @@ import com.example.prodfinal.R
 import com.example.prodfinal.data.repository.RecomendationInfoRepositoryImpl
 import com.example.prodfinal.domain.model.FullRecomendationModel
 
-var fsqId: String? = ""
-
 @Composable
 fun RecomendationScreen(context: Context, navController: NavController) {
-    val dataIsLoaded = remember {
-        mutableStateOf(false)
+    val fsqId = remember {
+        mutableStateOf("")
     }
 
     val placeInfo = remember {
@@ -58,12 +55,11 @@ fun RecomendationScreen(context: Context, navController: NavController) {
         )
     }
 
-    if (!dataIsLoaded.value) {
-        dataIsLoaded.value = true
-        fsqId = navController.currentBackStackEntry?.arguments?.getString("fsq_id")
+    LaunchedEffect(true) {
+        fsqId.value = "" + navController.currentBackStackEntry?.arguments?.getString("fsq_id")
         RecomendationInfoRepositoryImpl().getRecomendations(
             context,
-            "" + fsqId
+            "" + fsqId.value
         ) { response ->
             placeInfo.value = response
         }
@@ -132,14 +128,14 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
         LazyRow {
             items(placeInfo.value.category) {
-                Box (
-                  modifier = Modifier
-                      .padding(
-                          10.dp,
-                          10.dp,
-                          0.dp,
-                          0.dp
-                      )
+                Box(
+                    modifier = Modifier
+                        .padding(
+                            10.dp,
+                            10.dp,
+                            0.dp,
+                            0.dp
+                        )
                 ) {
                     Text(
                         modifier = Modifier
@@ -186,13 +182,16 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
 
         Column(
-            modifier = Modifier.
-            padding(10.dp)
+            modifier = Modifier.padding(10.dp)
         ) {
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = {},
+                onClick = {
+                    navController.navigate(
+                        "create_todo_screen/PLACE/${placeInfo.value.id}/${placeInfo.value.title}"
+                    )
+                },
                 colors = ButtonDefaults.buttonColors(
                     colorResource(id = R.color.text),
                     colorResource(id = R.color.text),

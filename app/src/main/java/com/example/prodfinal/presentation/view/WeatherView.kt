@@ -23,6 +23,7 @@ import coil.compose.AsyncImage
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.WeatherModel
 
+// Блок погоды для главного экрана
 @Composable
 fun WeatherView(weatherItem: WeatherModel, status: String) {
 
@@ -31,7 +32,7 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
             .fillMaxWidth()
             .background(
                 color = colorResource(id = R.color.main),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(16.dp)
             )
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally

@@ -2,41 +2,48 @@ package com.example.prodfinal.data.remote
 
 import android.content.Context
 import android.util.Log
-import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.domain.model.FullRecomendationModel
-import com.example.prodfinal.domain.model.RecomendationModel
 import org.json.JSONObject
 
+// Класс для получения полной информации о месте
+
 class RecomendationInfoApi {
+    // Функция, которая делает запрос к апи
     fun getRecomendationInfo(
         context: Context,
         fsqId: String,
         onFinish: (FullRecomendationModel) -> Unit
     ) {
-
         // URL запроса
-        val url = "https://api.foursquare.com/v3/places/$fsqId?fields=fsq_id%2Cname%2Cphotos%2Clocation%2Ccategories%2Cemail"
+        val url = "https://api.foursquare.com/v3/places/$fsqId?fields=" +
+                "fsq_id%2C" +
+                "name%2C" +
+                "photos%2C" +
+                "location%2C" +
+                "categories%2C" +
+                "email"
 
         // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
 
         // Создаем запрос
         val stringRequest = object : StringRequest(
-            Request.Method.GET,
+            Method.GET,
             url,
             { response ->
-                // Обрабатываем его и отдаем виджету
+                // Обрабатываем результат и отдаем
                 handleResponse(JSONObject(response), onFinish)
             },
             { error ->
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                Log.e("RECOMENDATION_INFO_API_ERROR", "ERROR")
+                Log.e("RECOMENDATION_INFO_API_ERROR", error.toString())
             }
         ) {
+            // Добавляем хедеры к запросу
             override fun getHeaders(): MutableMap<String, String> {
-                var headers = HashMap<String, String>()
+                val headers = HashMap<String, String>()
                 headers["accept"] = "application/json"
                 headers["Authorization"] = "fsq3+2kGsGSBxL42Wxh4dNRb1ZixdUyTVPcDxi77c2By8f8="
                 return headers
@@ -47,7 +54,7 @@ class RecomendationInfoApi {
         requestQueue.add(stringRequest)
     }
 
-    // Функция, которая обрабатывает json локации в RecomendationModel
+    // Функция, которая парсит все необходимые данные и возвращает как FullRecomendationModel
     fun handleResponse(
         response: JSONObject,
         onFinish: (FullRecomendationModel) -> Unit
@@ -61,14 +68,14 @@ class RecomendationInfoApi {
 
         val categories = ArrayList<String>()
         val categoryArray = response.getJSONArray("categories")
-        for (i in 0..categoryArray.length()-1) {
+        for (i in 0..<categoryArray.length()) {
             val category = categoryArray.getJSONObject(i)
             categories.add(category.getString("short_name"))
         }
 
         val images = ArrayList<String>()
         val imagesArray = response.getJSONArray("photos")
-        for (i in 0..imagesArray.length()-1) {
+        for (i in 0..<imagesArray.length()) {
             val image = imagesArray.getJSONObject(i)
             images.add(
                 image.getString("prefix") + "original" + image.getString("suffix")

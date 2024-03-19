@@ -2,5 +2,6 @@
 <resources>
     <style name="Theme.ProdFinal" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimaryDark">#EDEDED</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

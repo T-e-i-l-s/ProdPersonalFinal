@@ -17,14 +17,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.ToDoItemModel
 
-// Блок задачи с описанием для экрана "Мой досуг"
+// Блок задачи с локацией для экрана "Мой досуг"
 @Composable
-fun TextToDoView(
+fun PlaceToDoView(
+    navController: NavController,
     item: ToDoItemModel,
-    deleteItem: () -> Unit
+    deleteItem: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -33,6 +35,9 @@ fun TextToDoView(
                 color = colorResource(id = R.color.main),
                 shape = RoundedCornerShape(16.dp)
             )
+            .clickable {
+                navController.navigate("recomendation_screen/${item.placeId}")
+            }
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -46,7 +51,7 @@ fun TextToDoView(
                 color = colorResource(id = R.color.text),
             )
             Text(
-                text = item.description,
+                text = item.placeName,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
             )

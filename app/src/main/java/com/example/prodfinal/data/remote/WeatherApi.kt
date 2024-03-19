@@ -7,6 +7,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
 
+// Класс для получения погоды на lat и lon
+
 class WeatherApi {
     // Функция,которая получает погоду и обрабатывает ее
     fun getWeather(
@@ -15,7 +17,6 @@ class WeatherApi {
         lon: Double,
         onFinish: (result: WeatherModel) -> Unit
     ) {
-
         // Ключ от openweathermap
         val apiKey = "97f99a723034917ca5ad6313b64249db"
         // URL запроса

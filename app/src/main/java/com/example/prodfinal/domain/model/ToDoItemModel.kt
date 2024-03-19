@@ -5,5 +5,6 @@ data class ToDoItemModel(
     val name: String,
     val description: String,
     val date: String,
-    val placeId: String
+    val placeId: String,
+    val placeName: String
 )

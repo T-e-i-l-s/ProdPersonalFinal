@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,23 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.local.DeleteToDo
-import com.example.prodfinal.data.local.GetToDoArray
+import com.example.prodfinal.data.local.GetToDoList
 import com.example.prodfinal.domain.model.ToDoItemModel
-import com.example.prodfinal.presentation.view.RecomendationView
+import com.example.prodfinal.presentation.view.PlaceToDoView
 import com.example.prodfinal.presentation.view.TextToDoView
 
 @Composable
 fun ToDoScreen(context: Context, navController: NavController) {
-    val isLoaded = remember {
-        mutableStateOf(false)
-    }
     val todoList = remember {
         mutableStateOf(arrayListOf<ToDoItemModel>())
     }
 
-    if (!isLoaded.value) {
-        isLoaded.value = true
-        todoList.value = GetToDoArray().getToDo(context)
+    LaunchedEffect(true) {
+        todoList.value = GetToDoList().getToDo(context)
         Log.e("TODO_LIST", todoList.value.toString())
     }
 
@@ -60,16 +55,22 @@ fun ToDoScreen(context: Context, navController: NavController) {
                 contentDescription = "Добавить",
                 modifier = Modifier
                     .clickable {
-                        navController.navigate("create_todo_screen/TEXT")
+                        navController.navigate("create_todo_screen/TEXT/_/_")
                     }
             )
         }
 
         LazyColumn {
             itemsIndexed(todoList.value) { index, item ->
-                Box(modifier = Modifier.padding(0.dp,10.dp,0.dp,0.dp)) {
-                    TextToDoView(item) {
-                        todoList.value = DeleteToDo().deleteToDo(context, index)
+                Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+                    if (item.mode == "text") {
+                        TextToDoView(item) {
+                            todoList.value = DeleteToDo().deleteToDo(context, index)
+                        }
+                    } else {
+                        PlaceToDoView(navController, item) {
+                            todoList.value = DeleteToDo().deleteToDo(context, index)
+                        }
                     }
                 }
             }

@@ -1,8 +1,6 @@
 package com.example.prodfinal.presentation.screen
 
 import android.content.Context
-import android.os.Bundle
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +14,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,14 +28,44 @@ import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.local.AddToDo
 import com.example.prodfinal.domain.model.ToDoItemModel
-import org.json.JSONObject
-
-val toDoName = mutableStateOf("")
-val toDoDescription = mutableStateOf("")
-val toDoDate = mutableStateOf("")
+import com.example.prodfinal.navigation.currentRoute
+import com.example.prodfinal.navigation.selectedItem
 
 @Composable
 fun CreateToDoScreen(context: Context, navController: NavController) {
+    // Режим экрана(TEXT или PLACE)
+    val mode = remember {
+        mutableStateOf("")
+    }
+    // Id места(нужно для PlaceToDo)
+    val placeId = remember {
+        mutableStateOf("")
+    }
+    // Название места(нужно для PlaceToDo)
+    val placeName = remember {
+        mutableStateOf("")
+    }
+
+    // Название задачи
+    val toDoName = remember {
+        mutableStateOf("")
+    }
+    // Описание задачи(для TextToDo)
+    val toDoDescription = remember {
+        mutableStateOf("")
+    }
+    // Дедлайн задачи
+    val toDoDate = remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(true) {
+        mode.value = "" + navController.currentBackStackEntry?.arguments?.getString("mode")
+        placeId.value = "" + navController.currentBackStackEntry?.arguments?.getString("place_id")
+        placeName.value =
+            "" + navController.currentBackStackEntry?.arguments?.getString("place_name")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,53 +81,12 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                 }
         )
 
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = toDoName.value,
-                onValueChange = {
-                    toDoName.value = it
-                },
-                label = { Text("Название") }
-            )
+        if (mode.value == "TEXT") {
+            TextToDo(toDoName, toDoDescription, toDoDate)
+        } else {
+            PlaceToDo(toDoName, toDoDate, "" + placeName.value)
         }
 
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = toDoDescription.value,
-                onValueChange = {
-                    toDoDescription.value = it
-                },
-                label = { Text("Описание") }
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                value = toDoDate.value,
-                onValueChange = {
-                    toDoDate.value = it
-                },
-                label = { Text("Дата") }
-            )
-        }
 
         Box(
             modifier = Modifier.padding(10.dp)
@@ -105,15 +95,37 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
-                    AddToDo().addToDo(
-                        context, ToDoItemModel(
-                            "",
+                    val result: ToDoItemModel
+                    if (mode.value == "TEXT") {
+                        result = ToDoItemModel(
+                            "text",
                             toDoName.value,
                             toDoDescription.value,
                             toDoDate.value,
+                            "",
                             ""
                         )
+                    } else {
+                        result = ToDoItemModel(
+                            "place",
+                            toDoName.value,
+                            "",
+                            toDoDate.value,
+                            "" + placeId.value,
+                            "" + placeName.value
+                        )
+                    }
+
+                    toDoName.value = ""
+                    toDoDescription.value = ""
+                    toDoDate.value = ""
+
+                    AddToDo().addToDo(
+                        context,
+                        result
                     )
+                    selectedItem.value = 1
+                    currentRoute.value = "todo_screen"
                     navController.navigate("main_component")
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -133,5 +145,103 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun TextToDo(
+    toDoName: MutableState<String>,
+    toDoDescription: MutableState<String>,
+    toDoDate: MutableState<String>
+) {
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = toDoName.value,
+            onValueChange = {
+                toDoName.value = it
+            },
+            label = { Text("Название") }
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = toDoDescription.value,
+            onValueChange = {
+                toDoDescription.value = it
+            },
+            label = { Text("Описание") }
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = toDoDate.value,
+            onValueChange = {
+                toDoDate.value = it
+            },
+            label = { Text("Дата") }
+        )
+    }
+}
+
+@Composable
+fun PlaceToDo(
+    toDoName: MutableState<String>,
+    toDoDate: MutableState<String>,
+    placeName: String
+) {
+    Text(
+        text = "Место: $placeName"
+    )
+
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = toDoName.value,
+            onValueChange = {
+                toDoName.value = it
+            },
+            label = { Text("Название") }
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = toDoDate.value,
+            onValueChange = {
+                toDoDate.value = it
+            },
+            label = { Text("Дата") }
+        )
     }
 }

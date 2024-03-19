@@ -1,7 +1,6 @@
 package com.example.prodfinal.presentation.screen
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +14,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,45 +32,45 @@ import com.example.prodfinal.domain.authorization.GetRandomUser
 import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.UserModel
 
-// Начата ли загрузка данных
-var isUserLoading = false
-
-// Данные с экрана "Создать аккаунт"
-val randomUser = mutableStateOf(
-    UserModel(
-        mutableStateOf(""),
-        mutableStateOf(""),
-        mutableStateOf(""),
-        mutableStateOf(""),
-        mutableStateOf(""),
-        mutableStateOf(""),
-    )
-)
-
-// Данные с экрана "Войти"
-val username = mutableStateOf("")
-val password = mutableStateOf("")
-
-var mode: String? = null
-
 @Composable
 fun AuthorisationScreen(context: Context, navController: NavController) {
-    var modeIsLoaded = remember {
-        mutableStateOf(false)
+    // Данные с экрана "Создать аккаунт"
+    val randomUser = remember {
+        mutableStateOf(
+            UserModel(
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf(""),
+            )
+        )
     }
 
-    if (!isUserLoading) {
-        isUserLoading = true
+    // Данные с экрана "Войти"
+    val username = remember {
+        mutableStateOf("")
+    }
+    val password = remember {
+        mutableStateOf("")
+    }
+
+    // Режим экрана(LOGIN или SIGNIN)
+    val mode = remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(true) {
+        mode.value = "" + navController
+            .currentBackStackEntry
+            ?.arguments
+            ?.getString("mode")
         GetRandomUser().getRandomUser(
             context
         ) { response ->
             randomUser.value = response
         }
-    }
-
-    if (!modeIsLoaded.value) {
-        modeIsLoaded.value = true
-        mode = navController.currentBackStackEntry?.arguments?.getString("mode")
     }
 
     Column(
@@ -96,9 +97,11 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = if (mode == "LOGIN") "Войти"
-                else if (mode == "SIGNIN") "Создать аккаунт"
-                else "",
+                text = when (mode.value) {
+                    "LOGIN" -> "Войти"
+                    "SIGNIN" -> "Создать аккаунт"
+                    else -> ""
+                },
                 color = colorResource(id = R.color.text),
                 fontSize = 19.sp,
                 fontWeight = FontWeight(700),
@@ -106,15 +109,15 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                     .padding(5.dp)
             )
 
-            if (mode == "LOGIN") {
-                LogIn()
-            } else if (mode == "SIGNIN") {
-                SignIn()
+            if (mode.value == "LOGIN") {
+                LogIn(username, password)
+            } else if (mode.value == "SIGNIN") {
+                SignIn(randomUser)
             }
 
             Button(
                 onClick = {
-                    if (mode == "LOGIN") {
+                    if (mode.value == "LOGIN") {
                         AllowUser().checkAccess(
                             context,
                             username.value,
@@ -122,7 +125,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                         ) {
                             isRegistered.value = it
                         }
-                    }  else if (mode == "SIGNIN") {
+                    } else if (mode.value == "SIGNIN") {
                         UserInfo().saveUser(context, randomUser.value)
                     }
                     navController.navigate("main_component")
@@ -144,9 +147,9 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
     }
 }
 
-
+// Блок инпутов в режиме входа
 @Composable
-fun LogIn() {
+fun LogIn(username: MutableState<String>, password: MutableState<String>) {
     Column(
         modifier = Modifier
             .padding(5.dp)
@@ -172,9 +175,9 @@ fun LogIn() {
     }
 }
 
-
+// Блок инпутов в режиме регистрации
 @Composable
-fun SignIn() {
+fun SignIn(randomUser: MutableState<UserModel>) {
     Column(
         modifier = Modifier
             .padding(5.dp)

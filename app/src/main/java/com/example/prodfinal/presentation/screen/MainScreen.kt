@@ -1,7 +1,6 @@
 package com.example.prodfinal.presentation.screen
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,28 +11,26 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
-import com.example.prodfinal.data.local.AddToDo
-import com.example.prodfinal.data.local.GetToDoArray
 import com.example.prodfinal.data.location.Location
 import com.example.prodfinal.data.repository.RecomentadionRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
-import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.RecomendationModel
-import com.example.prodfinal.domain.model.ToDoItemModel
 import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.WeatherView
-import com.google.gson.Gson
-import org.json.JSONObject
 
-// Начата ли загрузка данных
-var isWeatherLoading = false
+// Были ли загруженны данные
+var isDataLoaded = false
 
 // Статус виджета погоды(загружается, нет доступа, загружен)
 val weatherLoadingStatus = mutableStateOf("LOADING")
@@ -52,12 +49,12 @@ val weatherInfo =
         )
     )
 
+// Список рекомендаций(места рядом)
 var recomendations = mutableStateOf(mutableListOf<RecomendationModel>())
 
 @Composable
 fun MainScreen(context: Context, stackNavigator: NavController) {
-    if (!isWeatherLoading) { // Если данные не загружены
-        isWeatherLoading = true
+    LaunchedEffect(!isDataLoaded) {
         // Получаем данные о геолокации
         Location(context).getLocation { locationResponse ->
             if (!locationResponse.isEnabled) { // Если не удалось получить геолокацию
@@ -66,7 +63,6 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                 // Получаем погоду на данных координатах
                 WeatherRepositoryImpl().getWeather(
                     context,
-//                    55.78, 49.12
                     locationResponse.latitude,
                     locationResponse.longtitude
                 ) { weatherResponse ->
@@ -77,15 +73,14 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                 // Получаем рекомендации на данных координатах
                 RecomentadionRepositoryImpl().getRecomendations(
                     context,
-//                    55.78, 49.12
                     locationResponse.latitude,
                     locationResponse.longtitude
                 ) { recomendationsResponse ->
-//                    Log.e("RECOMENDATIONS", recomendationsResponse.toString())
                     recomendations.value = recomendationsResponse
                 }
             }
         }
+        isDataLoaded = true
     }
 
     Column(
@@ -96,8 +91,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
     ) {
         Box(
             modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                .fillMaxWidth()
         ) {
             WeatherView(
                 weatherItem = weatherInfo.value,
@@ -105,14 +99,34 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
             )
         }
 
-        LazyColumn {
-            items(recomendations.value) { item ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
-                ) {
-                    RecomendationView(recomendation = item, stackNavigator)
+        Text(
+            text = "Рекомендации",
+            color = colorResource(id = R.color.text),
+            fontSize = 31.sp,
+            fontWeight = FontWeight(700),
+            modifier = Modifier
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+        )
+
+        when (recomendations.value.size) {
+            0 -> {
+                Text(
+                    text = "Мест рядом нет",
+                    color = colorResource(id = R.color.text),
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            } else -> {
+                LazyColumn {
+                    items(recomendations.value) { item ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp, 0.dp, 0.dp, 10.dp),
+                        ) {
+                            RecomendationView(recomendation = item, stackNavigator)
+                        }
+                    }
                 }
             }
         }

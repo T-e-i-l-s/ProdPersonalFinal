@@ -21,18 +21,19 @@ import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.UserModel
-import com.example.prodfinal.navigation.StackNavigator
 
 var isRegistered = mutableStateOf(false)
-var userIsLoading = false
-var userInfo = mutableStateOf(UserModel(
-    mutableStateOf(""),
-    mutableStateOf(""),
-    mutableStateOf(""),
-    mutableStateOf(""),
-    mutableStateOf(""),
-    mutableStateOf(""),
-))
+private var userIsLoading = false
+private var userInfo = mutableStateOf(
+    UserModel(
+        mutableStateOf(""),
+        mutableStateOf(""),
+        mutableStateOf(""),
+        mutableStateOf(""),
+        mutableStateOf(""),
+        mutableStateOf(""),
+    )
+)
 
 @Composable
 fun UserInfoScreen(context: Context, stackNavigator: NavController) {
@@ -46,15 +47,14 @@ fun UserInfoScreen(context: Context, stackNavigator: NavController) {
         if (isRegistered.value) {
             Registered(context)
         } else {
-            NotRegistered(stackNavigator = stackNavigator)
+            NotRegistered(stackNavigator)
         }
     }
 }
 
-// whiteelephant359
-// arcadia
+// Экран с информацией о юзере
 @Composable
-fun Registered (context: Context) {
+fun Registered(context: Context) {
     if (!userIsLoading) {
         userIsLoading = true
         UserInfo().getUser(context) {
@@ -70,8 +70,9 @@ fun Registered (context: Context) {
     )
 }
 
+// Экран с предложение авторизоваться
 @Composable
-fun NotRegistered (stackNavigator: NavController) {
+fun NotRegistered(stackNavigator: NavController) {
     Text(
         text = "Добро пожаловать в LifestyleHUB!",
         color = colorResource(id = R.color.text),
