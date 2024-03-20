@@ -6,6 +6,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import kotlin.math.roundToInt
 
 // Класс для получения погоды на lat и lon
 
@@ -84,10 +85,10 @@ class WeatherApi {
                 city,
                 weatherName,
                 weatherIcon,
-                main_info.getString("temp"),
-                main_info.getString("temp_min"),
-                main_info.getString("temp_max"),
-                main_info.getString("feels_like"),
+                "" + main_info.getDouble("temp").roundToInt(),
+                "" + main_info.getDouble("temp_min").roundToInt(),
+                "" + main_info.getDouble("temp_max").roundToInt(),
+                "" + main_info.getDouble("feels_like").roundToInt(),
             )
         )
     }

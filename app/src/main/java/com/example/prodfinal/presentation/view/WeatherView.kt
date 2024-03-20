@@ -1,7 +1,8 @@
 package com.example.prodfinal.presentation.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,7 +34,7 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = colorResource(id = R.color.main),
+                color = Color.Transparent,
                 shape = RoundedCornerShape(16.dp)
             )
             .padding(10.dp),
@@ -41,7 +44,8 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
         if (status == "READY") { // Если данные получены
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
             ) {
 
                 // Иконка погоды
@@ -55,42 +59,47 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
 
                 Column(
                     modifier = Modifier
-                        .weight(1f)
                         .padding(
                             10.dp,
                             0.dp,
                             0.dp,
                             0.dp
                         )
-
+                        .weight(1f)
                 ) {
-                    // Локация
-                    Text(
-                        text = weatherItem.city,
-                        color = colorResource(id = R.color.text),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight(700),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Left
-                    )
-
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.location_icon),
+                            contentDescription = "Локация"
+                        )
+                        // Локация
+                        Text(
+                            text = weatherItem.city,
+                            color = colorResource(id = R.color.text),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight(700),
+                            textAlign = TextAlign.Left
+                        )
+                    }
                     // Температура
                     Text(
-                        text = weatherItem.currentTemprature + "°",
+                        text = weatherItem.currentTemprature + "°C",
                         color = colorResource(id = R.color.text),
                         fontSize = 25.sp,
                         fontWeight = FontWeight(700)
                     )
                     // Мин и макс температура
                     Text(
-                        text = "От ${weatherItem.minTemprature}° " +
-                                "до ${weatherItem.maxTemprature}°",
+                        text = "От ${weatherItem.minTemprature}°C " +
+                                "до ${weatherItem.maxTemprature}°C",
                         color = colorResource(id = R.color.text),
                         fontSize = 16.sp
                     )
                     // Ощущается как
                     Text(
-                        text = "Ощущается как ${weatherItem.feelsLike}°",
+                        text = "Ощущается как ${weatherItem.feelsLike}°C",
                         color = colorResource(id = R.color.text),
                         fontSize = 16.sp
                     )
@@ -109,8 +118,8 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
 
             CircularProgressIndicator(
                 modifier = Modifier.padding(10.dp),
-                color = colorResource(id = R.color.text),
-                trackColor = colorResource(id = R.color.selected),
+                color = colorResource(id = R.color.sceleton2),
+                trackColor = colorResource(id = R.color.sceleton1),
             )
 
         } else { // Если произошла ошибка

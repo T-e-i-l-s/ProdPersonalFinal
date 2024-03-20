@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +31,7 @@ import com.example.prodfinal.data.repository.RecomentadionRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
 import com.example.prodfinal.domain.model.RecomendationModel
 import com.example.prodfinal.domain.model.WeatherModel
+import com.example.prodfinal.presentation.view.RecomendationSceletonView
 import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.WeatherView
 
@@ -33,7 +39,7 @@ import com.example.prodfinal.presentation.view.WeatherView
 var isDataLoaded = false
 
 // Статус виджета погоды(загружается, нет доступа, загружен)
-val weatherLoadingStatus = mutableStateOf("LOADING")
+val loadingStatus = mutableStateOf("LOADING")
 
 // Погода
 val weatherInfo =
@@ -58,7 +64,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
         // Получаем данные о геолокации
         Location(context).getLocation { locationResponse ->
             if (!locationResponse.isEnabled) { // Если не удалось получить геолокацию
-                weatherLoadingStatus.value = "ERROR"
+                loadingStatus.value = "ERROR"
             } else { // Удалось получить геолокацию
                 // Получаем погоду на данных координатах
                 WeatherRepositoryImpl().getWeather(
@@ -67,7 +73,6 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                     locationResponse.longtitude
                 ) { weatherResponse ->
                     weatherInfo.value = weatherResponse // Сохраняем данные о погоде
-                    weatherLoadingStatus.value = "READY" // Меняем статус виджета на "загружен"
                 }
 
                 // Получаем рекомендации на данных координатах
@@ -77,6 +82,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                     locationResponse.longtitude
                 ) { recomendationsResponse ->
                     recomendations.value = recomendationsResponse
+                    loadingStatus.value = "READY" // Меняем статус виджета на "загружен"
                 }
             }
         }
@@ -86,49 +92,76 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.background))
-            .padding(10.dp, 10.dp, 10.dp, 0.dp)
+            .background(
+                colorResource(id = R.color.weather),
+            )
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             WeatherView(
                 weatherItem = weatherInfo.value,
-                status = weatherLoadingStatus.value,
+                status = loadingStatus.value,
             )
         }
 
-        Text(
-            text = "Рекомендации",
-            color = colorResource(id = R.color.text),
-            fontSize = 31.sp,
-            fontWeight = FontWeight(700),
+        Column(
             modifier = Modifier
-                .padding(0.dp, 10.dp, 0.dp, 10.dp),
-        )
+                .fillMaxWidth()
+                .weight(1f)
+                .background(
+                    colorResource(id = R.color.background),
+                    RoundedCornerShape(
+                        topEnd = 24.dp,
+                        topStart = 24.dp
+                    )
+                )
+                .padding(10.dp, 0.dp, 10.dp, 0.dp),
+        ) {
 
-        when (recomendations.value.size) {
-            0 -> {
+            Text(
+                text = "Рекомендации",
+                color = colorResource(id = R.color.text),
+                fontSize = 25.sp,
+                fontWeight = FontWeight(600),
+                modifier = Modifier
+                    .padding(0.dp, 10.dp, 0.dp, 10.dp),
+            )
+
+            if (loadingStatus.value == "LOADING") {
+                RecomendationSceletonView()
+                RecomendationSceletonView()
+                RecomendationSceletonView()
+            } else if (
+                recomendations.value.isEmpty() ||
+                loadingStatus.value == "ERROR"
+            ) {
                 Text(
                     text = "Мест рядом нет",
                     color = colorResource(id = R.color.text),
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center
                 )
-            } else -> {
+            } else {
                 LazyColumn {
                     items(recomendations.value) { item ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(0.dp, 0.dp, 0.dp, 10.dp),
+                                .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                                .shadow(
+                                    elevation = 5.dp,
+                                    shape = RoundedCornerShape(16.dp),
+                                    spotColor = colorResource(id = R.color.shadow)
+                                ),
                         ) {
                             RecomendationView(recomendation = item, stackNavigator)
                         }
                     }
                 }
             }
+
         }
     }
 }
