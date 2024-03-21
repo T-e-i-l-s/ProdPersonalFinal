@@ -10,15 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,7 +28,7 @@ import com.example.prodfinal.data.repository.RecomentadionRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
 import com.example.prodfinal.domain.model.RecomendationModel
 import com.example.prodfinal.domain.model.WeatherModel
-import com.example.prodfinal.presentation.view.RecomendationSceletonView
+import com.example.prodfinal.presentation.view.RecomendationSkeletonView
 import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.WeatherView
 
@@ -130,9 +127,9 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
             )
 
             if (loadingStatus.value == "LOADING") {
-                RecomendationSceletonView()
-                RecomendationSceletonView()
-                RecomendationSceletonView()
+                RecomendationSkeletonView()
+                RecomendationSkeletonView()
+                RecomendationSkeletonView()
             } else if (
                 recomendations.value.isEmpty() ||
                 loadingStatus.value == "ERROR"

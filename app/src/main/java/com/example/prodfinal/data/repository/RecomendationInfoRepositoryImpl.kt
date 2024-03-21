@@ -5,7 +5,7 @@ import com.example.prodfinal.data.remote.RecomendationInfoApi
 import com.example.prodfinal.domain.model.FullRecomendationModel
 
 class RecomendationInfoRepositoryImpl {
-    fun getRecomendations (
+    fun getRecomendationInfo (
         context: Context,
         fsqId: String,
         onFinish: (FullRecomendationModel) -> Unit

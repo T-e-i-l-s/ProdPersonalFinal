@@ -118,8 +118,8 @@ fun WeatherView(weatherItem: WeatherModel, status: String) {
 
             CircularProgressIndicator(
                 modifier = Modifier.padding(10.dp),
-                color = colorResource(id = R.color.sceleton2),
-                trackColor = colorResource(id = R.color.sceleton1),
+                color = colorResource(id = R.color.weather),
+                trackColor = colorResource(id = R.color.background),
             )
 
         } else { // Если произошла ошибка

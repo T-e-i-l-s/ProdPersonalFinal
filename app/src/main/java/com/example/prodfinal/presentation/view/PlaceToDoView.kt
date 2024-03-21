@@ -28,7 +28,6 @@ import com.example.prodfinal.R
 import com.example.prodfinal.domain.authorization.AllowUser
 import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.ToDoItemModel
-import com.example.prodfinal.presentation.screen.isRegistered
 
 // Блок задачи с локацией для экрана "Мой досуг"
 @Composable

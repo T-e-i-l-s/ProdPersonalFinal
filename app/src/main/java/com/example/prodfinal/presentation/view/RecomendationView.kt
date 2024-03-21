@@ -92,11 +92,13 @@ fun RecomendationView(
                     )
                 }
             }
-            Text(
-                text = recomendation.address,
-                fontSize = 16.sp,
-                color = colorResource(id = R.color.text)
-            )
+            if (recomendation.address.isNotEmpty()) {
+                Text(
+                    text = recomendation.address,
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.text)
+                )
+            }
         }
     }
 }

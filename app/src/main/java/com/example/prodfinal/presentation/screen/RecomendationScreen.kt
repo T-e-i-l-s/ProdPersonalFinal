@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -38,7 +37,7 @@ import coil.compose.AsyncImage
 import com.example.prodfinal.R
 import com.example.prodfinal.data.repository.RecomendationInfoRepositoryImpl
 import com.example.prodfinal.domain.model.FullRecomendationModel
-import com.example.prodfinal.presentation.view.ImageSceletonView
+import com.example.prodfinal.presentation.view.ImageSkeletonView
 
 @Composable
 fun RecomendationScreen(context: Context, navController: NavController) {
@@ -65,7 +64,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
     LaunchedEffect(true) {
         fsqId.value = "" + navController.currentBackStackEntry?.arguments?.getString("fsq_id")
-        RecomendationInfoRepositoryImpl().getRecomendations(
+        RecomendationInfoRepositoryImpl().getRecomendationInfo(
             context,
             "" + fsqId.value
         ) { response ->
@@ -101,7 +100,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                         color = colorResource(id = R.color.background)
                     ),
             ) {
-                ImageSceletonView()
+                ImageSkeletonView()
             }
         } else {
             AsyncImage(
@@ -135,7 +134,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                             color = colorResource(id = R.color.background)
                         ),
                 ) {
-                    ImageSceletonView()
+                    ImageSkeletonView()
                 }
                 Box(
                     modifier = Modifier
@@ -146,7 +145,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                             color = colorResource(id = R.color.background)
                         ),
                 ) {
-                    ImageSceletonView()
+                    ImageSkeletonView()
                 }
                 Box(
                     modifier = Modifier
@@ -157,10 +156,10 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                             color = colorResource(id = R.color.background)
                         ),
                 ) {
-                    ImageSceletonView()
+                    ImageSkeletonView()
                 }
             }
-        } else {
+        } else if (placeInfo.value.photos.size > 1) {
             LazyRow {
                 items(placeInfo.value.photos.subList(1, placeInfo.value.photos.size)) {
                     AsyncImage(
@@ -219,18 +218,20 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                 }
             }
 
-            Text(
-                text = "Адрес: " + placeInfo.value.address,
-                fontSize = 16.sp,
-                color = colorResource(id = R.color.text),
-                modifier = Modifier
-                    .padding(
-                        10.dp,
-                        10.dp,
-                        0.dp,
-                        0.dp
-                    )
-            )
+            if (placeInfo.value.address.isNotEmpty()) {
+                Text(
+                    text = "Адрес: " + placeInfo.value.address,
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.text),
+                    modifier = Modifier
+                        .padding(
+                            10.dp,
+                            10.dp,
+                            0.dp,
+                            0.dp
+                        )
+                )
+            }
 
             if (placeInfo.value.mail != null) {
                 Text(

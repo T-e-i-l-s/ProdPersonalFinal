@@ -1,42 +1,63 @@
 package com.example.prodfinal.domain.authorization
 
 import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.example.prodfinal.domain.model.UserModel
+import com.google.gson.Gson
+import org.json.JSONArray
+
+// Класс для работы с авторизацией
 
 class UserInfo {
-    fun saveUser (context: Context, user: UserModel) {
-        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
-        sharedPref.edit()
-            .putString("name", user.name.value)
-            .putString("mail", user.mail.value)
-            .putString("birthday", user.birthday.value)
-            .putString("address", user.address.value)
-            .putString("phone_number", user.phone_number.value)
-            .putString("password", user.password.value)
-            .apply()
+    // Функция, которая создает нового пользователя
+    fun createUser (context: Context, user: UserModel) {
+        getUsers(context) { usersList ->
+            // Добавляем нового пользователя
+            usersList.add(user)
+
+            // Переводим в json список авторизованных пользователей
+            val gson = Gson()
+            val users = gson.toJson(usersList)
+
+            // Сохраняем SharedPreferences
+            val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
+            sharedPref.edit()
+                .putString("users", users)
+                .apply()
+        }
     }
 
-    fun getUser (context: Context, onFinish: (result: UserModel) -> Unit) {
+    // Функция, которая получает список пользователей
+    fun getUsers (context: Context, onFinish: (result: ArrayList<UserModel>) -> Unit) {
+        // Получаем данные из SharedPreferences
         val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
+        val data = sharedPref.getString("users", "")
 
-        val name = sharedPref.getString("name", null)
-        val mail = sharedPref.getString("mail", null)
-        val birthday = sharedPref.getString("birthday", null)
-        val address = sharedPref.getString("address", null)
-        val phoneNum = sharedPref.getString("phone_number", null)
-        val password = sharedPref.getString("password", null)
-
-        onFinish(
-            UserModel(
-                mutableStateOf("" + name),
-                mutableStateOf("" + mail),
-                mutableStateOf("" + birthday),
-                mutableStateOf("" + address),
-                mutableStateOf("" + phoneNum),
-                mutableStateOf("" + password)
+        // Отсекаем случай с пустым списком
+        if (data == "") {
+            onFinish (
+                ArrayList()
             )
-        )
+            return
+        }
+
+        // Парсим все необходимые поля
+        val json = JSONArray(data)
+        val usersList = ArrayList<UserModel>()
+        for (i in 0..<json.length()) {
+            val user = json.getJSONObject(i)
+            usersList.add(
+                UserModel(
+                    user.getString("name"),
+                    user.getString("mail"),
+                    user.getString("birthday"),
+                    user.getString("address"),
+                    user.getString("phone_number"),
+                    user.getString("password"),
+                )
+            )
+        }
+
+        // Отдаем результат
+        onFinish(usersList)
     }
 }

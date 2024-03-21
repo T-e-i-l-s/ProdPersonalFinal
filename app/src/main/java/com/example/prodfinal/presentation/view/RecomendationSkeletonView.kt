@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.example.prodfinal.R
 
 @Composable
-fun RecomendationSceletonView () {
+fun RecomendationSkeletonView () {
     val transition = rememberInfiniteTransition()
 
     val translateAnimation = transition.animateFloat(

@@ -60,12 +60,12 @@ class GetRandomUser {
 
         onFinish(
             UserModel(
-                mutableStateOf(name),
-                mutableStateOf(mail),
-                mutableStateOf(birthday),
-                mutableStateOf(adress),
-                mutableStateOf(phoneNum),
-                mutableStateOf(password)
+                name,
+                mail,
+                birthday,
+                adress,
+                phoneNum,
+                password
             )
         )
     }

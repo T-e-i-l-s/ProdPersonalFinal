@@ -6,24 +6,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,36 +31,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
+import com.example.prodfinal.data.local.SaveCurrentUser
 import com.example.prodfinal.domain.authorization.AllowUser
 import com.example.prodfinal.domain.authorization.GetRandomUser
 import com.example.prodfinal.domain.authorization.UserInfo
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
+// Данные с экрана "Создать аккаунт"
+private val signinUsername = mutableStateOf("")
+private val signinMail = mutableStateOf("")
+private val signinAddress = mutableStateOf("")
+private val signinPhone = mutableStateOf("")
+private val signinBirthday = mutableStateOf("")
+private val signinPassword = mutableStateOf("")
+
+// Данные с экрана "Войти"
+private val loginUsername = mutableStateOf("")
+private val loginPassword = mutableStateOf("")
+
 @Composable
 fun AuthorisationScreen(context: Context, navController: NavController) {
-    // Данные с экрана "Создать аккаунт"
-    val randomUser = remember {
-        mutableStateOf(
-            UserModel(
-                mutableStateOf(""),
-                mutableStateOf(""),
-                mutableStateOf(""),
-                mutableStateOf(""),
-                mutableStateOf(""),
-                mutableStateOf(""),
-            )
-        )
-    }
-
-    // Данные с экрана "Войти"
-    val username = remember {
-        mutableStateOf("")
-    }
-    val password = remember {
-        mutableStateOf("")
-    }
-
     // Режим экрана(LOGIN или SIGNIN)
     val mode = remember {
         mutableStateOf("")
@@ -74,8 +65,15 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
         GetRandomUser().getRandomUser(
             context
         ) { response ->
-            randomUser.value = response
+            signinUsername.value = response.name
+            signinMail.value = response.mail
+            signinBirthday.value = response.birthday
+            signinAddress.value = response.address
+            signinPhone.value = response.phone_number
+            signinPassword.value = response.password
         }
+        loginUsername.value = ""
+        loginPassword.value = ""
     }
 
     Column(
@@ -88,7 +86,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             painter = painterResource(id = R.drawable.arrow_left_icon),
             contentDescription = "Назад",
             modifier = Modifier
-                .clickable (
+                .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
@@ -103,53 +101,67 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp),
-                text = when (mode.value) {
-                    "LOGIN" -> "Войти"
-                    "SIGNIN" -> "Создать аккаунт"
-                    else -> ""
-                },
-                color = colorResource(id = R.color.text),
-                fontSize = 19.sp,
-                fontWeight = FontWeight(700),
-            )
-
-            if (mode.value == "LOGIN") {
-                LogIn(username, password)
-            } else if (mode.value == "SIGNIN") {
-                SignIn(randomUser)
-            }
-
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    if (mode.value == "LOGIN") {
-                        AllowUser().checkAccess(
-                            context,
-                            username.value,
-                            password.value
-                        ) {
-                            isRegistered.value = it
-                        }
-                    } else if (mode.value == "SIGNIN") {
-                        UserInfo().saveUser(context, randomUser.value)
-                    }
-                    navController.navigate("main_component")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                ),
+            Column(
+                modifier = Modifier
+                    .weight(1f, false)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    modifier = Modifier.padding(5.dp),
-                    text = "Далее",
-                    color = colorResource(id = R.color.background),
-                    fontSize = 16.sp,
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp),
+                    text = when (mode.value) {
+                        "LOGIN" -> "Войти"
+                        "SIGNIN" -> "Создать аккаунт"
+                        else -> ""
+                    },
+                    color = colorResource(id = R.color.text),
+                    fontSize = 19.sp,
+                    fontWeight = FontWeight(700),
                 )
+
+                if (mode.value == "LOGIN") {
+                    LogIn()
+                } else if (mode.value == "SIGNIN") {
+                    SignIn()
+                }
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        if (mode.value == "LOGIN") {
+                            AllowUser().checkAccess(
+                                context,
+                                loginUsername.value,
+                                loginPassword.value
+                            )
+                        } else if (mode.value == "SIGNIN") {
+                            val userInfo = UserModel(
+                                signinUsername.value,
+                                signinMail.value,
+                                signinBirthday.value,
+                                signinAddress.value,
+                                signinPhone.value,
+                                signinPassword.value,
+                            )
+                            UserInfo().createUser(context, userInfo)
+                            SaveCurrentUser().saveCurrentUser(context, userInfo)
+                        }
+                        navController.navigate("main_component")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        colorResource(id = R.color.text),
+                        colorResource(id = R.color.text),
+                        colorResource(id = R.color.text),
+                        colorResource(id = R.color.text),
+                    ),
+                ) {
+                    Text(
+                        modifier = Modifier.padding(5.dp),
+                        text = "Далее",
+                        color = colorResource(id = R.color.background),
+                        fontSize = 16.sp,
+                    )
+                }
             }
         }
     }
@@ -157,31 +169,31 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
 
 // Блок инпутов в режиме входа
 @Composable
-fun LogIn(username: MutableState<String>, password: MutableState<String>) {
+fun LogIn() {
     Column(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = username.value,
+            value = loginUsername.value,
             onValueChange = {
-                username.value = it
+                loginUsername.value = it
             },
             label = { Text("Имя") },
             colors = getTextFieldColors(),
             shape = RoundedCornerShape(16.dp),
         )
     }
-    Column (
+    Column(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = password.value,
+            value = loginPassword.value,
             onValueChange = {
-                password.value = it
+                loginPassword.value = it
             },
             label = { Text("Пароль") },
             colors = getTextFieldColors(),
@@ -192,16 +204,16 @@ fun LogIn(username: MutableState<String>, password: MutableState<String>) {
 
 // Блок инпутов в режиме регистрации
 @Composable
-fun SignIn(randomUser: MutableState<UserModel>) {
+fun SignIn() {
     Column(
         modifier = Modifier
             .padding(0.dp, 0.dp, 0.dp, 10.dp)
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.name.value,
+            value = signinUsername.value,
             onValueChange = {
-                randomUser.value.name.value = it
+                signinUsername.value = it
             },
             label = { Text("Имя") },
             colors = getTextFieldColors(),
@@ -215,9 +227,9 @@ fun SignIn(randomUser: MutableState<UserModel>) {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.mail.value,
+            value = signinMail.value,
             onValueChange = {
-                randomUser.value.mail.value = it
+                signinMail.value = it
             },
             label = { Text("Почта") },
             colors = getTextFieldColors(),
@@ -231,9 +243,9 @@ fun SignIn(randomUser: MutableState<UserModel>) {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.birthday.value,
+            value = signinBirthday.value,
             onValueChange = {
-                randomUser.value.birthday.value = it
+                signinBirthday.value = it
             },
             label = { Text("День рождения") },
             colors = getTextFieldColors(),
@@ -247,9 +259,9 @@ fun SignIn(randomUser: MutableState<UserModel>) {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.address.value,
+            value = signinAddress.value,
             onValueChange = {
-                randomUser.value.address.value = it
+                signinAddress.value = it
             },
             label = { Text("Адрес") },
             colors = getTextFieldColors(),
@@ -263,9 +275,9 @@ fun SignIn(randomUser: MutableState<UserModel>) {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.phone_number.value,
+            value = signinPhone.value,
             onValueChange = {
-                randomUser.value.phone_number.value = it
+                signinPhone.value = it
             },
             label = { Text("Телефон") },
             colors = getTextFieldColors(),
@@ -279,9 +291,9 @@ fun SignIn(randomUser: MutableState<UserModel>) {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = randomUser.value.password.value,
+            value = signinPassword.value,
             onValueChange = {
-                randomUser.value.password.value = it
+                signinPassword.value = it
             },
             label = { Text("Пароль") },
             colors = getTextFieldColors(),
