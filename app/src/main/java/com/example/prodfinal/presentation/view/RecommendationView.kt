@@ -1,10 +1,13 @@
 package com.example.prodfinal.presentation.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,10 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,22 +50,32 @@ fun RecomendationView(
                 indication = null,
             ) {
                 navController.navigate(
-                    "recomendation_screen/${recomendation.id}"
+                    "recommendation_screen/${recomendation.id}"
                 )
             }
             .clipToBounds(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Иконка локации
-        AsyncImage(
-            model = recomendation.image,
-            contentDescription = recomendation.title,
-            modifier = Modifier
+        if (recomendation.image == "") {
+            NoPhotoView(
+                modifier = Modifier
                 .fillMaxWidth()
                 .height(128.dp)
-                .clip(shape = RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.FillWidth,
-        )
+                .clip(RoundedCornerShape(16.dp))
+            )
+        } else {
+            // Иконка локации
+            AsyncImage(
+                model = recomendation.image,
+                contentDescription = recomendation.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(128.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.FillWidth,
+            )
+        }
+
         Column(
             modifier = Modifier
                 .padding(10.dp)
@@ -76,7 +90,8 @@ fun RecomendationView(
                     fontSize = 19.sp,
                     fontWeight = FontWeight(700),
                     color = colorResource(id = R.color.text),
-                    maxLines = 1
+                    maxLines = 1,
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
                 if (recomendation.category.size > 0) {
                     Text(
@@ -88,7 +103,8 @@ fun RecomendationView(
                         text = recomendation.category[0],
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text),
-                        maxLines = 1
+                        maxLines = 1,
+                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                     )
                 }
             }
@@ -96,7 +112,8 @@ fun RecomendationView(
                 Text(
                     text = recomendation.address,
                     fontSize = 16.sp,
-                    color = colorResource(id = R.color.text)
+                    color = colorResource(id = R.color.text),
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
         }

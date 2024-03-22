@@ -11,29 +11,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
-import com.example.prodfinal.data.local.AddToDo
+import com.example.prodfinal.data.source.ToDoSource
 import com.example.prodfinal.domain.model.ToDoItemModel
 import com.example.prodfinal.navigation.currentRoute
+import com.example.prodfinal.navigation.currentScreen
 import com.example.prodfinal.navigation.selectedItem
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
@@ -86,7 +87,9 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    navController.popBackStack()
+                    if (currentScreen.value == "create_todo_screen") {
+                        navController.popBackStack()
+                    }
                 }
         )
 
@@ -129,7 +132,7 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     toDoDescription.value = ""
                     toDoDate.value = ""
 
-                    AddToDo().addToDo(
+                    ToDoSource().addToDo(
                         context,
                         result
                     )
@@ -150,7 +153,8 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp,
                     modifier = Modifier
-                        .padding(5.dp)
+                        .padding(5.dp),
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
         }
@@ -175,9 +179,14 @@ fun TextToDo(
             onValueChange = {
                 toDoName.value = it
             },
-            label = { Text("Название") },
+            label = {
+                Text(
+                    text = "Название",
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
+            },
             colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
         )
     }
 
@@ -193,7 +202,12 @@ fun TextToDo(
             onValueChange = {
                 toDoDescription.value = it
             },
-            label = { Text("Описание") },
+            label = {
+                Text(
+                    text = "Описание",
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
+            },
             colors = getTextFieldColors(),
             shape = RoundedCornerShape(16.dp),
         )
@@ -213,7 +227,12 @@ fun TextToDo(
             },
             colors = getTextFieldColors(),
             shape = RoundedCornerShape(16.dp),
-            label = { Text("Дата") }
+            label = {
+                Text(
+                    text = "Дата",
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
+            },
         )
     }
 }
@@ -231,6 +250,7 @@ fun PlaceToDo(
         fontSize = 19.sp,
         fontWeight = FontWeight(700),
         color = colorResource(id = R.color.text),
+        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
     )
 
     Box(
@@ -247,7 +267,12 @@ fun PlaceToDo(
             },
             colors = getTextFieldColors(),
             shape = RoundedCornerShape(16.dp),
-            label = { Text("Название") }
+            label = {
+                Text(
+                    text = "Название",
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
+            },
         )
     }
 
@@ -265,7 +290,12 @@ fun PlaceToDo(
             },
             colors = getTextFieldColors(),
             shape = RoundedCornerShape(16.dp),
-            label = { Text("Дата") }
+            label = {
+                Text(
+                    text = "Дата",
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
+            },
         )
     }
 }

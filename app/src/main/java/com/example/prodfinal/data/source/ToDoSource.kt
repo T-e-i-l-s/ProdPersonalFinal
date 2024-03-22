@@ -1,12 +1,38 @@
-package com.example.prodfinal.data.local
+package com.example.prodfinal.data.source
 
 import android.content.Context
 import com.example.prodfinal.domain.model.ToDoItemModel
+import com.google.gson.Gson
 import org.json.JSONArray
 
-// Класс для получения списка дел
+class ToDoSource {/*
+    Функция, которая добавляет новый элемент к списку дел и
+    сохраняет изменения в SharedPreferences
+    */
+fun addToDo(
+    context: Context,
+    newItem: ToDoItemModel
+) {
+    // Получаем список дел через класс GetToDoList
+    val list = getToDo(context)
 
-class GetToDoList {
+    // Добавляем новый элемент в список
+    list.add(newItem)
+
+    // Получаем json обновленного списка дел
+    val gson = Gson()
+    val jsonList = gson.toJson(list)
+
+    // Сохраняем изменения в SharedPreferences
+    val sharedPreferences = context.getSharedPreferences(
+        "LifestyleHUB",
+        Context.MODE_PRIVATE
+    )
+    sharedPreferences.edit()
+        .putString("todo_list", jsonList)
+        .apply()
+}
+
     // Функция, которая получает список дел и обрабатывает
     fun getToDo(context: Context): ArrayList<ToDoItemModel> {
         // Получаем данные из SharedPreferences
@@ -21,6 +47,37 @@ class GetToDoList {
 
         // Возвращаем обработанный ArrayList
         return decryptJson(jsonList)
+    }
+
+    /*
+    Функция, которая удаляет элемент из списка дел и
+    сохраняет изменения в SharedPreferences
+    */
+    fun deleteToDo(
+        context: Context,
+        index: Int
+    ): ArrayList<ToDoItemModel> {
+        // Получаем список дел через класс GetToDoList
+        val list = getToDo(context)
+
+        // Удаляем элемент из списка
+        list.removeAt(index)
+
+        // Получаем json обновленного списка дел
+        val gson = Gson()
+        val jsonList = gson.toJson(list)
+
+        // Сохраняем изменения в SharedPreferences
+        val sharedPreferences = context.getSharedPreferences(
+            "LifestyleHUB",
+            Context.MODE_PRIVATE
+        )
+        sharedPreferences.edit()
+            .putString("todo_list", jsonList)
+            .apply()
+
+        // Возвращаем обновленный список
+        return list
     }
 
     /*

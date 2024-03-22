@@ -1,4 +1,4 @@
-package com.example.prodfinal.data.remote
+package com.example.prodfinal.data.api
 
 import android.content.Context
 import android.util.Log
@@ -9,9 +9,9 @@ import org.json.JSONObject
 
 // Класс для получения рекомендаций(мест рядом)
 
-class RecomendationsApi {
+class RecommendationsApi {
     // Функция, которая делает запрос к апи
-    fun getRecomendations(
+    fun getRecommendations(
         context: Context,
         lat: Double,
         lon: Double,

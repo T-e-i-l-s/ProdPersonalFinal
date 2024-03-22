@@ -1,12 +1,11 @@
-package com.example.prodfinal.data.local
+package com.example.prodfinal.data.source
 
 import android.content.Context
 import com.example.prodfinal.domain.model.UserModel
+import com.google.gson.Gson
 import org.json.JSONObject
 
-// Класс для получения и обработки данных о авторизованном пользователе
-
-class GetCurrentUser {
+class CurrentUserSource {
     // Функция, которая получает зарегестрирован ли пользователь из SharedPreferences
     fun isRegistered(context: Context): Boolean {
         val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
@@ -29,5 +28,25 @@ class GetCurrentUser {
             json.getString("phone_number"),
             json.getString("password"),
         )
+    }
+
+    // Функция, которая удаляем из SharedPreferences данные о пользователе
+    fun logOut (context: Context) {
+        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
+        sharedPref.edit().remove("current_user").remove("is_registered").apply()
+    }
+
+    // Функция, которая переводит данные о пользователе в json и сохраняет в SharedPreferences
+    fun saveCurrentUser (context: Context, user: UserModel) {
+        // Переводим в json
+        val gson = Gson()
+        val userJson = gson.toJson(user)
+
+        // Сохраняем в SharedPreferences
+        val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
+        sharedPref.edit()
+            .putString("current_user", userJson)
+            .putBoolean("is_registered", true)
+            .apply()
     }
 }

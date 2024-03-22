@@ -1,13 +1,42 @@
 package com.example.prodfinal.domain.authorization
 
 import android.content.Context
+import com.example.prodfinal.data.source.CurrentUserSource
 import com.example.prodfinal.domain.model.UserModel
 import com.google.gson.Gson
 import org.json.JSONArray
 
 // Класс для работы с авторизацией
 
-class UserInfo {
+class Authorization {
+    // Функция, которая проверяет корректность введенных данных
+    fun checkAccess(
+        context: Context,
+        username: String,
+        password: String,
+        onFinish: (result: Boolean) -> Unit
+    ) {
+        // Получаем список пользователей
+        Authorization().getUsers(context) { usersList ->
+            // Проходим по всем юзерам и проверяем есть ли совпадения с введенными данными
+            for (i in 0..<usersList.size) {
+                if (username == usersList[i].name && password == usersList[i].password) {
+                    CurrentUserSource().saveCurrentUser(context, usersList[i])
+
+                    val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
+                    sharedPref.edit()
+                        .putBoolean("is_registered", true)
+                        .apply()
+
+                    onFinish(true)
+
+                    return@getUsers
+                }
+            }
+            onFinish(false)
+        }
+    }
+
     // Функция, которая создает нового пользователя
     fun createUser (context: Context, user: UserModel) {
         getUsers(context) { usersList ->

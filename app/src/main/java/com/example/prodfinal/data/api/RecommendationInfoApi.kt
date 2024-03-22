@@ -1,4 +1,4 @@
-package com.example.prodfinal.data.remote
+package com.example.prodfinal.data.api
 
 import android.content.Context
 import android.util.Log
@@ -9,9 +9,9 @@ import org.json.JSONObject
 
 // Класс для получения полной информации о месте
 
-class RecomendationInfoApi {
+class RecommendationInfoApi {
     // Функция, которая делает запрос к апи
-    fun getRecomendationInfo(
+    fun getRecommendationInfo(
         context: Context,
         fsqId: String,
         onFinish: (FullRecomendationModel) -> Unit

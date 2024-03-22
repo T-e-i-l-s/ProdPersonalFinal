@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
-import com.example.prodfinal.data.local.GetCurrentUser
-import com.example.prodfinal.data.local.LogOut
+import com.example.prodfinal.data.source.CurrentUserSource
 import com.example.prodfinal.domain.model.UserModel
+import com.example.prodfinal.domain.state.AuthState
 import com.example.prodfinal.presentation.view.UserInfoView
 
 private val isRegistered = mutableStateOf(false)
@@ -37,7 +40,7 @@ private val isRegistered = mutableStateOf(false)
 fun UserInfoScreen(context: Context, stackNavigator: NavController) {
 
     LaunchedEffect(true) {
-        isRegistered.value = GetCurrentUser().isRegistered(context)
+        isRegistered.value = CurrentUserSource().isRegistered(context)
     }
 
     Column(
@@ -72,7 +75,7 @@ fun Registered(context: Context) {
     }
 
     LaunchedEffect(true) {
-        userInfo.value = GetCurrentUser().getCurrentUser(context)
+        userInfo.value = CurrentUserSource().getCurrentUser(context)
     }
 
     Column(
@@ -88,13 +91,17 @@ fun Registered(context: Context) {
                 fontWeight = FontWeight(700),
                 modifier = Modifier
                     .padding(5.dp)
-                    .weight(1f)
+                    .weight(1f),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
             Image(
                 painter = painterResource(id = R.drawable.logout_icon),
                 contentDescription = "Выйти из аккаунта",
-                modifier = Modifier.clickable {
-                    LogOut().logOut(context)
+                modifier = Modifier.clickable (
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    CurrentUserSource().logOut(context)
                     isRegistered.value = false
                 }
             )
@@ -114,7 +121,8 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
         color = colorResource(id = R.color.text),
         fontSize = 19.sp,
         fontWeight = FontWeight(700),
-        modifier = Modifier.padding(5.dp)
+        modifier = Modifier.padding(5.dp),
+        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
     )
 
     Column(
@@ -123,7 +131,7 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
     ) {
         Button(
             onClick = {
-                stackNavigator.navigate("authorization_screen/SIGNIN")
+                stackNavigator.navigate("authorization_screen/${AuthState.SIGNIN}")
             },
             colors = ButtonDefaults.buttonColors(
                 colorResource(id = R.color.main),
@@ -136,6 +144,7 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
                 text = "Создать аккаунт",
                 color = colorResource(id = R.color.text),
                 fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
         }
     }
@@ -146,7 +155,7 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
     ) {
         Button(
             onClick = {
-                stackNavigator.navigate("authorization_screen/LOGIN")
+                stackNavigator.navigate("authorization_screen/${AuthState.LOGIN}")
             },
             colors = ButtonDefaults.buttonColors(
                 colorResource(id = R.color.main),
@@ -159,6 +168,7 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
                 text = "Войти",
                 color = colorResource(id = R.color.text),
                 fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
         }
     }
@@ -183,6 +193,7 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
                 text = "Сбросить все аккаунты",
                 color = colorResource(id = R.color.text),
                 fontSize = 16.sp,
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
         }
     }

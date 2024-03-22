@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,16 +48,19 @@ fun TextToDoView(
                 fontSize = 19.sp,
                 fontWeight = FontWeight(700),
                 color = colorResource(id = R.color.text),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
             Text(
                 text = item.description,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
             Text(
                 text = item.date,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
         }
         Image(

@@ -3,9 +3,11 @@
     <color name="background">#EDEDED</color>
     <color name="weather">#C7D3FF</color>
     <color name="main">#D5D5D5</color>
+    <color name="no_image">#C1C1C1</color>
     <color name="sceleton1">#D5D5D5</color>
     <color name="sceleton2">#BCBCBC</color>
     <color name="selected">#D5D5D5</color>
     <color name="text">#1E1E1E</color>
     <color name="shadow">#474747</color>
+    <color name="error">#EF3A3A</color>
 </resources>

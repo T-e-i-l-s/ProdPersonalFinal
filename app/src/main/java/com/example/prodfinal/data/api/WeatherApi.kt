@@ -1,10 +1,11 @@
-package com.example.prodfinal.data.remote
+package com.example.prodfinal.data.api
 
 import android.content.Context
 import com.example.prodfinal.domain.model.WeatherModel
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.prodfinal.data.mapper.WeatherMapper
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
@@ -81,14 +82,16 @@ class WeatherApi {
 
         // Отдаем погоду виджету
         onFinish(
-            WeatherModel(
-                city,
-                weatherName,
-                weatherIcon,
-                "" + main_info.getDouble("temp").roundToInt(),
-                "" + main_info.getDouble("temp_min").roundToInt(),
-                "" + main_info.getDouble("temp_max").roundToInt(),
-                "" + main_info.getDouble("feels_like").roundToInt(),
+            WeatherMapper().invoke(
+                WeatherModel(
+                    city,
+                    weatherName,
+                    weatherIcon,
+                    main_info.getString("temp"),
+                    main_info.getString("temp_min"),
+                    main_info.getString("temp_max"),
+                    main_info.getString("feels_like"),
+                )
             )
         )
     }

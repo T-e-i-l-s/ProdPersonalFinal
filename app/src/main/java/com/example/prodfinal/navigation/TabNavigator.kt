@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -102,7 +104,12 @@ fun TabView(navController: NavController, tabs: List<TabBarItemModel>) {
                 ),
                 alwaysShowLabel = true,
                 icon = { Icon(painter = item.icon, contentDescription = item.title) },
-                label = { Text(item.title) },
+                label = {
+                    Text(
+                        text = item.title,
+                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                    )
+                },
                 selected = selectedItem.intValue == index,
                 onClick = {
                     selectedItem.intValue = index

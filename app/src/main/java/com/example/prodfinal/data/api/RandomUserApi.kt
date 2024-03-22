@@ -1,15 +1,14 @@
-package com.example.prodfinal.domain.authorization
+package com.example.prodfinal.data.api
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.domain.model.UserModel
 import org.json.JSONObject
 
-class GetRandomUser {
+class RandomUserApi {
     // Функция,которая получает погоду и обрабатывает ее
     fun getRandomUser(
         context: Context,

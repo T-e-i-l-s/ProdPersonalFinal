@@ -1,6 +1,7 @@
 package com.example.prodfinal.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.compose.NavHost
@@ -12,6 +13,8 @@ import com.example.prodfinal.presentation.screen.CreateToDoScreen
 import com.example.prodfinal.presentation.screen.RecomendationScreen
 
 // Граф Stack навигации(между графом с Tab навигацией и вспомогательными экранами)
+
+var currentScreen = mutableStateOf("main_component")
 
 @Composable
 fun StackNavigator () {
@@ -25,6 +28,7 @@ fun StackNavigator () {
         composable(
             "main_component"
         ) {
+            currentScreen.value = "main_component"
             TabNavigator(navController)
         }
 
@@ -32,14 +36,16 @@ fun StackNavigator () {
         composable(
             "authorization_screen/{mode}"
         ) {
+            currentScreen.value = "authorization_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             AuthorisationScreen(LocalContext.current, navController)
         }
 
         // Экран подробностей о рекомендации(месте)
         composable(
-            "recomendation_screen/{fsq_id}",
+            "recommendation_screen/{fsq_id}",
         ) {
+            currentScreen.value = "recommendation_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             RecomendationScreen(LocalContext.current, navController)
         }
@@ -48,6 +54,7 @@ fun StackNavigator () {
         composable(
             "create_todo_screen/{mode}/{place_id}/{place_name}"
         ) {
+            currentScreen.value = "create_todo_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             CreateToDoScreen(LocalContext.current, navController)
         }

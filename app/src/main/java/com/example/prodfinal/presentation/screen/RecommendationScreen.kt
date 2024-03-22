@@ -29,20 +29,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.prodfinal.R
-import com.example.prodfinal.data.repository.RecomendationInfoRepositoryImpl
+import com.example.prodfinal.data.repository.RecommendationInfoRepositoryImpl
+import com.example.prodfinal.data.source.RecomendationSource
 import com.example.prodfinal.domain.model.FullRecomendationModel
+import com.example.prodfinal.domain.state.LoadingState
+import com.example.prodfinal.navigation.currentScreen
 import com.example.prodfinal.presentation.view.ImageSkeletonView
+import com.example.prodfinal.presentation.view.NoPhotoView
 
 @Composable
 fun RecomendationScreen(context: Context, navController: NavController) {
     val loadingStatus = remember {
-        mutableStateOf("LOADING")
+        mutableStateOf(LoadingState.LOADING)
     }
 
     val fsqId = remember {
@@ -64,12 +70,13 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
     LaunchedEffect(true) {
         fsqId.value = "" + navController.currentBackStackEntry?.arguments?.getString("fsq_id")
-        RecomendationInfoRepositoryImpl().getRecomendationInfo(
+        RecommendationInfoRepositoryImpl().getRecommendationInfo(
             context,
             "" + fsqId.value
         ) { response ->
             placeInfo.value = response
-            loadingStatus.value = "READY"
+            RecomendationSource().saveRecomendationData(context, response)
+            loadingStatus.value = LoadingState.READY
         }
     }
 
@@ -87,10 +94,12 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    navController.popBackStack()
+                    if (currentScreen.value == "recommendation_screen") {
+                        navController.popBackStack()
+                    }
                 }
         )
-        if (loadingStatus.value == "LOADING") {
+        if (loadingStatus.value == LoadingState.LOADING) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +111,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
             ) {
                 ImageSkeletonView()
             }
-        } else {
+        } else if (placeInfo.value.photos.size > 0) {
             AsyncImage(
                 model =
                 if (placeInfo.value.photos.isEmpty()) {
@@ -120,8 +129,18 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     ),
                 contentScale = ContentScale.FillWidth,
             )
+        } else {
+            NoPhotoView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .border(
+                        width = 3.dp,
+                        color = colorResource(id = R.color.background)
+                    ),
+            )
         }
-        if (loadingStatus.value == "LOADING") {
+        if (loadingStatus.value == LoadingState.LOADING) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -177,7 +196,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                 }
             }
         }
-        if (loadingStatus.value == "READY") {
+        if (loadingStatus.value == LoadingState.READY) {
             Text(
                 text = placeInfo.value.title,
                 fontSize = 25.sp,
@@ -189,7 +208,8 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                         10.dp,
                         0.dp,
                         0.dp
-                    )
+                    ),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
 
             LazyRow {
@@ -212,7 +232,8 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                             text = it,
                             fontSize = 16.sp,
                             color = colorResource(id = R.color.text),
-                            maxLines = 1
+                            maxLines = 1,
+                            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
                     }
                 }
@@ -227,9 +248,10 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                         .padding(
                             10.dp,
                             10.dp,
-                            0.dp,
+                            10.dp,
                             0.dp
-                        )
+                        ),
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
 
@@ -242,9 +264,10 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                         .padding(
                             10.dp,
                             10.dp,
-                            0.dp,
+                            10.dp,
                             0.dp
-                        )
+                        ),
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
 
@@ -273,7 +296,8 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                         fontWeight = FontWeight(700),
                         fontSize = 16.sp,
                         modifier = Modifier
-                            .padding(5.dp)
+                            .padding(5.dp),
+                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                     )
                 }
             }

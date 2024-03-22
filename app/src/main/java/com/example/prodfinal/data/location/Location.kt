@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.prodfinal.domain.model.LocationModel
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -12,26 +14,23 @@ import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 
+private var onFinish: (result: LocationModel) -> Unit = {}
+
 // Класс для работы с локацией
 
 @Suppress("DEPRECATION")
 class Location(val context: Context) {
     // Функция для проверки разрешений и запроса локации
-    fun getLocation(onFinish: (result: LocationModel) -> Unit) {
+    fun getLocation(onFinish2: (result: LocationModel) -> Unit) {
+        onFinish = onFinish2
         if (!checkPermission()) { // Если нет разрешения на использование геолокации
             // Запрашиваем разрешения на геолокацию
-            requestPermissions()
-            onFinish(
-                LocationModel(
-                    false,
-                    0.0,
-                    0.0,
-                )
-            )
+            requestPermissions(onFinish)
             return
+        } else {
+            // Делаем запрос на локацию
+            locationRequest(onFinish)
         }
-        // Делаем запрос на локацию
-        locationRequest(onFinish)
     }
 
     // Функция получения локации
@@ -96,7 +95,7 @@ class Location(val context: Context) {
     }
 
     // Функция, которая запрашивает разрешения на использование геолокации
-    private fun requestPermissions() {
+    private fun requestPermissions(onFinish: (result: LocationModel) -> Unit) {
         val permissions = arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION
@@ -106,5 +105,26 @@ class Location(val context: Context) {
             permissions,
             100
         )
+    }
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 100) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation(onFinish)
+            } else {
+                // Возвращаем "неудачный" ответ
+                onFinish(
+                    LocationModel(
+                        false,
+                        0.0,
+                        0.0,
+                    )
+                )
+            }
+        }
     }
 }

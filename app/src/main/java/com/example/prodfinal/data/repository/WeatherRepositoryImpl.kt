@@ -1,7 +1,7 @@
 package com.example.prodfinal.data.repository
 
 import android.content.Context
-import com.example.prodfinal.data.remote.WeatherApi
+import com.example.prodfinal.data.api.WeatherApi
 import com.example.prodfinal.domain.model.WeatherModel
 
 class WeatherRepositoryImpl {
