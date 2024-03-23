@@ -16,29 +16,30 @@ class Authorization {
         password: String,
         onFinish: (result: Boolean) -> Unit
     ) {
+        val passwordDecoded = Hash().decode(password) // Дехешированный пароль
         // Получаем список пользователей
         Authorization().getUsers(context) { usersList ->
             // Проходим по всем юзерам и проверяем есть ли совпадения с введенными данными
             for (i in 0..<usersList.size) {
-                if (username == usersList[i].name && password == usersList[i].password) {
+                // Проверяем совпадения
+                if (username == usersList[i].name &&
+                    passwordDecoded == Hash().decode(usersList[i].password)
+                ) { // Введенный пользователь найден
+                    // Сохраняем авторизованного пользователя в кеш
                     CurrentUserSource().saveCurrentUser(context, usersList[i])
-
-                    val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
-                    sharedPref.edit()
-                        .putBoolean("is_registered", true)
-                        .apply()
-
+                    // Возвращаем true(пользователь найден)
                     onFinish(true)
-
+                    // Выходим из функции
                     return@getUsers
                 }
             }
+            // Возвращаем false(пользователь не найден)
             onFinish(false)
         }
     }
 
     // Функция, которая создает нового пользователя
-    fun createUser (context: Context, user: UserModel) {
+    fun createUser(context: Context, user: UserModel) {
         getUsers(context) { usersList ->
             // Добавляем нового пользователя
             usersList.add(user)
@@ -56,14 +57,14 @@ class Authorization {
     }
 
     // Функция, которая получает список пользователей
-    fun getUsers (context: Context, onFinish: (result: ArrayList<UserModel>) -> Unit) {
+    private fun getUsers(context: Context, onFinish: (result: ArrayList<UserModel>) -> Unit) {
         // Получаем данные из SharedPreferences
-        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         val data = sharedPref.getString("users", "")
 
         // Отсекаем случай с пустым списком
         if (data == "") {
-            onFinish (
+            onFinish(
                 ArrayList()
             )
             return

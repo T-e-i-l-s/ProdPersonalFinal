@@ -4,8 +4,10 @@ import android.content.Context
 import com.example.prodfinal.data.api.RandomUserApi
 import com.example.prodfinal.domain.model.UserModel
 
+// Класс репозитория для random user api
+
 class RandomUserRepositoryImpl {
-    fun getRandomUser (
+    fun getRandomUser(
         context: Context,
         onFinish: (result: UserModel) -> Unit
     ) {

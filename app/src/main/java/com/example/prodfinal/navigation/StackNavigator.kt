@@ -9,17 +9,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prodfinal.R
 import com.example.prodfinal.presentation.screen.AuthorisationScreen
+import com.example.prodfinal.presentation.screen.CreateGoalScreen
 import com.example.prodfinal.presentation.screen.CreateToDoScreen
 import com.example.prodfinal.presentation.screen.RecomendationScreen
 
-// Граф Stack навигации(между графом с Tab навигацией и вспомогательными экранами)
+var currentScreen = mutableStateOf("main_component") // Открытый экран в графе stack навигации
 
-var currentScreen = mutableStateOf("main_component")
+// Граф Stack навигации(между графом с Tab навигацией и вспомогательными экранами)
 
 @Composable
 fun StackNavigator () {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = "main_component"
@@ -57,6 +57,15 @@ fun StackNavigator () {
             currentScreen.value = "create_todo_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             CreateToDoScreen(LocalContext.current, navController)
+        }
+
+        // Экран создания новой цели
+        composable(
+            "create_goal_screen"
+        ) {
+            currentScreen.value = "create_goal_screen"
+            ChangeStatusBarColor(colorResource(id = R.color.background))
+            CreateGoalScreen(LocalContext.current, navController)
         }
     }
 }

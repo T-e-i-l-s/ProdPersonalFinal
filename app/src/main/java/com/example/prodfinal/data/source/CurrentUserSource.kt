@@ -5,18 +5,21 @@ import com.example.prodfinal.domain.model.UserModel
 import com.google.gson.Gson
 import org.json.JSONObject
 
+// Класс работы с авторизованным пользователем
+
 class CurrentUserSource {
     // Функция, которая получает зарегестрирован ли пользователь из SharedPreferences
     fun isRegistered(context: Context): Boolean {
-        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
+        val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         return sharedPref.getBoolean("is_registered", false)
     }
 
-    // Функция, которая получает данные о пользователя из SharedPreferences
+    // Функция, которая получает данные о пользователе из SharedPreferences
     fun getCurrentUser(context: Context): UserModel {
         // Получаем данные о пользователе из SharedPreferences
-        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
-        val user = sharedPref.getString("current_user", "")
+        val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
+        val user =
+            sharedPref.getString("current_user", "") ?: return UserModel("", "", "", "", "", "")
 
         // Переводим данные о пользователе в json и отдаем
         val json = JSONObject(user)
@@ -30,14 +33,14 @@ class CurrentUserSource {
         )
     }
 
-    // Функция, которая удаляем из SharedPreferences данные о пользователе
-    fun logOut (context: Context) {
-        val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
+    // Функция, которая удаляет из SharedPreferences данные о пользователе
+    fun logOut(context: Context) {
+        val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         sharedPref.edit().remove("current_user").remove("is_registered").apply()
     }
 
     // Функция, которая переводит данные о пользователе в json и сохраняет в SharedPreferences
-    fun saveCurrentUser (context: Context, user: UserModel) {
+    fun saveCurrentUser(context: Context, user: UserModel) {
         // Переводим в json
         val gson = Gson()
         val userJson = gson.toJson(user)

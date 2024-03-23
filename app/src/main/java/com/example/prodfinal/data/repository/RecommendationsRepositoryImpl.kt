@@ -4,7 +4,8 @@ import android.content.Context
 import com.example.prodfinal.data.api.RecommendationsApi
 import com.example.prodfinal.domain.model.RecomendationModel
 
-class RecommentadionRepositoryImpl {
+// Класс репозитория для RecommendationsApi
+class RecommendationsRepositoryImpl {
     fun getRecommendations(
         context: Context,
         lat: Double,

@@ -1,8 +1,10 @@
 package com.example.prodfinal.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -28,13 +30,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.TabBarItemModel
+import com.example.prodfinal.presentation.screen.BudgetScreen
 import com.example.prodfinal.presentation.screen.MainScreen
 import com.example.prodfinal.presentation.screen.ToDoScreen
 import com.example.prodfinal.presentation.screen.UserInfoScreen
 
 // Индекс открытой страницы в массиве
 var selectedItem = mutableIntStateOf(0)
-
 // Route открытой страницы
 var currentRoute = mutableStateOf("main_screen")
 
@@ -54,6 +56,11 @@ fun TabNavigator(stackNavigator: NavController) {
             "todo_screen"
         ),
         TabBarItemModel(
+            title = "Бюджет",
+            icon = painterResource(R.drawable.budget_icon),
+            "budget_screen"
+        ),
+        TabBarItemModel(
             title = "Профиль",
             icon = painterResource(R.drawable.user_icon),
             "user_info_screen"
@@ -64,7 +71,9 @@ fun TabNavigator(stackNavigator: NavController) {
 
     Scaffold(
         bottomBar = {
-            BottomAppBar(modifier = Modifier) {
+            BottomAppBar(
+                containerColor = colorResource(id = R.color.background),
+            ) {
                 TabView(navController = navController, tabBarItems)
             }
         }
@@ -140,6 +149,10 @@ fun Navigations(navController: NavHostController, stackNavigator: NavController)
         composable("todo_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.background))
             ToDoScreen(LocalContext.current, stackNavigator)
+        }
+        composable("budget_screen") {
+            ChangeStatusBarColor(colorResource(id = R.color.background))
+            BudgetScreen(LocalContext.current, stackNavigator)
         }
         composable("user_info_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.background))

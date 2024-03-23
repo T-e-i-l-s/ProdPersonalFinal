@@ -33,6 +33,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.RecomendationModel
 
 // Блок рекомендации для главного экрана
+
 @Composable
 fun RecomendationView(
     recomendation: RecomendationModel,

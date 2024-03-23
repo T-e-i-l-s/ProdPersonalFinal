@@ -1,13 +1,12 @@
 package com.example.prodfinal.data.api
 
 import android.content.Context
-import android.util.Log
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.domain.model.FullRecomendationModel
 import org.json.JSONObject
 
-// Класс для получения полной информации о месте
+// Класс для получения полной информации о месте по fsq_id
 
 class RecommendationInfoApi {
     // Функция, которая делает запрос к апи
@@ -38,7 +37,6 @@ class RecommendationInfoApi {
             },
             { error ->
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                Log.e("RECOMENDATION_INFO_API_ERROR", error.toString())
             }
         ) {
             // Добавляем хедеры к запросу
@@ -59,6 +57,7 @@ class RecommendationInfoApi {
         response: JSONObject,
         onFinish: (FullRecomendationModel) -> Unit
     ) {
+        // Парсим все необходимое
         val id = response.getString("fsq_id")
         val title = response.getString("name")
         var email: String? = null
@@ -85,6 +84,7 @@ class RecommendationInfoApi {
         val locationObj = response.getJSONObject("location")
         val address = locationObj.getString("formatted_address")
 
+        // Отдаем
         onFinish(
             FullRecomendationModel(
                 id,

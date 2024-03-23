@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import com.example.prodfinal.R
 
+// Блок "Нет изображения" на случай отстуствия изображения в api
+
 @Composable
 fun NoPhotoView (modifier: Modifier) {
     Box(

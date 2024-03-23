@@ -1,7 +1,6 @@
 package com.example.prodfinal.data.api
 
 import android.content.Context
-import android.util.Log
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.domain.model.RecomendationModel
@@ -36,9 +35,8 @@ class RecommendationsApi {
                 // Обрабатываем результат и отдаем
                 handleResponse(response, onFinish)
             },
-            { error ->
+            {
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                Log.e("RECOMENDATION_API_ERROR", error.toString())
             }
         ) {
             // Добавляем хедеры к запросу
@@ -81,6 +79,7 @@ class RecommendationsApi {
     private fun handleRecomendationJson(
         response: JSONObject
     ): RecomendationModel {
+        // Парсим все необходимое
         val id = response.getString("fsq_id")
         val title = response.getString("name")
 
@@ -101,6 +100,7 @@ class RecommendationsApi {
         val locationObj = response.getJSONObject("location")
         val address = locationObj.getString("formatted_address")
 
+        // Отдаем
         return RecomendationModel(
             id,
             title,

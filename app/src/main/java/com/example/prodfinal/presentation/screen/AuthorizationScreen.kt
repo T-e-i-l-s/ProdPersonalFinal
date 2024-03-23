@@ -1,7 +1,6 @@
 package com.example.prodfinal.presentation.screen
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,12 +25,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,6 +36,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.data.source.CurrentUserSource
 import com.example.prodfinal.data.repository.RandomUserRepositoryImpl
 import com.example.prodfinal.domain.authorization.Authorization
+import com.example.prodfinal.domain.authorization.Hash
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
 import com.example.prodfinal.navigation.currentScreen
@@ -127,7 +125,6 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                     text = when (mode.value) {
                         AuthState.LOGIN -> "Войти"
                         AuthState.SIGNIN -> "Создать аккаунт"
-                        else -> ""
                     },
                     color = colorResource(id = R.color.text),
                     fontSize = 19.sp,
@@ -148,7 +145,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                             Authorization().checkAccess(
                                 context,
                                 loginUsername.value,
-                                loginPassword.value
+                                Hash().encode(loginPassword.value)
                             ) {
                                 if (it) {
                                     navController.navigate("main_component")
@@ -163,7 +160,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                                 signinBirthday.value,
                                 signinAddress.value,
                                 signinPhone.value,
-                                signinPassword.value,
+                                Hash().encode(signinPassword.value),
                             )
                             Authorization().createUser(context, userInfo)
                             CurrentUserSource().saveCurrentUser(context, userInfo)
@@ -232,7 +229,7 @@ fun LogIn() {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = loginPassword.value,
+            value = "*".repeat(loginPassword.value.length),
             onValueChange = {
                 isCorrect.value = true
                 loginPassword.value = it
@@ -363,7 +360,7 @@ fun SignIn() {
     ) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = signinPassword.value,
+            value = "*".repeat(signinPassword.value.length),
             onValueChange = {
                 signinPassword.value = it
             },

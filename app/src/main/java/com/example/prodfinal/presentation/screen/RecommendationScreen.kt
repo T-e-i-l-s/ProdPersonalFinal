@@ -51,10 +51,12 @@ fun RecomendationScreen(context: Context, navController: NavController) {
         mutableStateOf(LoadingState.LOADING)
     }
 
+    // fsq_id выбранной рекомендации
     val fsqId = remember {
         mutableStateOf("")
     }
 
+    // Информация о рекомендации
     val placeInfo = remember {
         mutableStateOf(
             FullRecomendationModel(
@@ -69,11 +71,14 @@ fun RecomendationScreen(context: Context, navController: NavController) {
     }
 
     LaunchedEffect(true) {
+        // Получаем fsq_id
         fsqId.value = "" + navController.currentBackStackEntry?.arguments?.getString("fsq_id")
+        // Делаем запрос на данные о рекомендации
         RecommendationInfoRepositoryImpl().getRecommendationInfo(
             context,
             "" + fsqId.value
         ) { response ->
+            // Выводим полученные данные
             placeInfo.value = response
             RecomendationSource().saveRecomendationData(context, response)
             loadingStatus.value = LoadingState.READY

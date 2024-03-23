@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -29,30 +28,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
-import com.example.prodfinal.data.source.ToDoSource
-import com.example.prodfinal.domain.model.ToDoItemModel
-import com.example.prodfinal.presentation.view.PlaceToDoView
-import com.example.prodfinal.presentation.view.TextToDoView
+import com.example.prodfinal.data.source.BudgetSource
+import com.example.prodfinal.domain.model.BudgetGoalModel
+import com.example.prodfinal.presentation.view.BudgetGoalView
+import com.example.prodfinal.presentation.view.ValuteView
 
-private var todoList = mutableStateOf(listOf<ToDoItemModel>())
+private val goals = mutableStateOf(listOf<BudgetGoalModel>())
 
 @Composable
-fun ToDoScreen(context: Context, navController: NavController) {
+fun BudgetScreen(context: Context, navController: NavController) {
     LaunchedEffect(true) {
-        todoList.value = ToDoSource().getToDo(context)
+        goals.value = BudgetSource().getGoals(context)
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        Modifier
             .background(colorResource(id = R.color.background))
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
+            .fillMaxSize()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = "Мой досуг",
+                text = "Бюджет",
                 color = colorResource(id = R.color.text),
                 fontSize = 22.sp,
                 fontWeight = FontWeight(700),
@@ -67,22 +66,19 @@ fun ToDoScreen(context: Context, navController: NavController) {
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                     ) {
-                        navController.navigate("create_todo_screen/TEXT/_/_")
+                        navController.navigate("create_goal_screen")
                     }
             )
         }
-
+        ValuteView(context = context)
         LazyColumn {
-            itemsIndexed(todoList.value) { index, item ->
-                Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
-                    if (item.mode == "text") {
-                        TextToDoView(item) {
-                            todoList.value = ToDoSource().deleteToDo(context, index)
-                        }
-                    } else {
-                        PlaceToDoView(navController, item) {
-                            todoList.value = ToDoSource().deleteToDo(context, index)
-                        }
+            itemsIndexed(goals.value) { index, item ->
+                Box(
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
+                ) {
+                    BudgetGoalView(context, item, index
+                    ) {
+                        goals.value = BudgetSource().deleteGoal(context, index)
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package com.example.prodfinal.data.api
 
 import android.content.Context
-import android.util.Log
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -29,9 +28,8 @@ class RandomUserApi {
                 // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
-            { error ->
+            {
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                Log.e("AUTH_ERROR", error.toString())
             }
         )
 
@@ -40,7 +38,8 @@ class RandomUserApi {
     }
 
     // Функция, которая обрабатывает json
-    fun handleResponse(response: String, onFinish: (response: UserModel) -> Unit) {
+    private fun handleResponse(response: String, onFinish: (response: UserModel) -> Unit) {
+        // Парсим все необходимое
         val json = JSONObject(response).getJSONArray("results").getJSONObject(0)
 
         val loginInfo = json.getJSONObject("login")
@@ -57,6 +56,7 @@ class RandomUserApi {
         val street = location.getJSONObject("street")
         val adress = "" + street.get("name") + " " + street.get("number")
 
+        // Отдаем
         onFinish(
             UserModel(
                 name,

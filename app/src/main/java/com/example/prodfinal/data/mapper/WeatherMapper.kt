@@ -3,8 +3,11 @@ package com.example.prodfinal.data.mapper
 import com.example.prodfinal.domain.model.WeatherModel
 import kotlin.math.roundToInt
 
-class WeatherMapper () {
+// Класс маппера погоды
+
+class WeatherMapper {
     fun invoke(weather: WeatherModel): WeatherModel {
+        // Корректируем и дополняем необходимые данные, а затем возвращаем
         return WeatherModel(
             weather.city,
             weather.weather,

@@ -25,6 +25,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.ToDoItemModel
 
 // Блок задачи с описанием для экрана "Мой досуг"
+
 @Composable
 fun TextToDoView(
     item: ToDoItemModel,

@@ -28,6 +28,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.ToDoItemModel
 
 // Блок задачи с локацией для экрана "Мой досуг"
+
 @Composable
 fun PlaceToDoView(
     navController: NavController,

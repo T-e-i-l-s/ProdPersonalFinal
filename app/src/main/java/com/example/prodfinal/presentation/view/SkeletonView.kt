@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,11 +19,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.prodfinal.R
 
+// Скелетон рекомендации для главного экрана
+
 @Composable
-fun RecomendationSkeletonView () {
+fun SceletonView (modifier: Modifier) {
     val transition = rememberInfiniteTransition()
 
     val translateAnimation = transition.animateFloat(
@@ -47,14 +51,11 @@ fun RecomendationSkeletonView () {
     )
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
+                .fillMaxSize()
                 .background(brush, RoundedCornerShape(16.dp))
         )
     }

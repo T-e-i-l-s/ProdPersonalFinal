@@ -30,6 +30,7 @@ import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.domain.state.LoadingState
 
 // Блок погоды для главного экрана
+
 @Composable
 fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
 

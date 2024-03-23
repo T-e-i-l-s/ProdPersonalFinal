@@ -18,7 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.UserModel
 
-// Блок задачи с описанием для экрана "Мой досуг"
+// Блок с информацией о пользователе
+
 @Composable
 fun UserInfoView (
     item: UserModel,
@@ -52,7 +53,8 @@ fun UserInfoView (
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 modifier = Modifier.weight(1f),
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
+                maxLines = 1
             )
         }
 
@@ -69,7 +71,8 @@ fun UserInfoView (
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 modifier = Modifier.weight(1f),
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
+                maxLines = 1
             )
         }
 
@@ -86,7 +89,8 @@ fun UserInfoView (
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 modifier = Modifier.weight(1f),
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
+                maxLines = 1
             )
         }
 
@@ -103,7 +107,8 @@ fun UserInfoView (
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 modifier = Modifier.weight(1f),
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
+                maxLines = 1
             )
         }
     }

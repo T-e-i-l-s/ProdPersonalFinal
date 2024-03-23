@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.example.prodfinal.R
 
+// Единый стиль для TextField
+
 @Composable
 fun getTextFieldColors() : TextFieldColors {
     return TextFieldDefaults.colors(

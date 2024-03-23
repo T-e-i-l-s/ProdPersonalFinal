@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,7 +18,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -28,16 +28,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.location.Location
-import com.example.prodfinal.data.repository.RecommentadionRepositoryImpl
+import com.example.prodfinal.data.repository.RecommendationsRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
 import com.example.prodfinal.domain.model.RecomendationModel
 import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.domain.state.LoadingState
-import com.example.prodfinal.presentation.view.RecomendationSkeletonView
 import com.example.prodfinal.presentation.view.RecomendationView
+import com.example.prodfinal.presentation.view.SceletonView
 import com.example.prodfinal.presentation.view.WeatherView
 
-// Были ли загруженны данные
+// Были ли загружены данные
 private var isDataLoaded = mutableStateOf(false)
 
 // Статус виджета погоды(загружается, нет доступа, загружен)
@@ -58,12 +58,13 @@ private val weatherInfo =
     )
 
 // Список рекомендаций(места рядом)
-private var recomendations = mutableStateOf(mutableListOf<RecomendationModel>())
+private var recomendations = mutableListOf<RecomendationModel>()
 
 @Composable
 fun MainScreen(context: Context, stackNavigator: NavController) {
     isDataLoaded.value = true
     LaunchedEffect(!isDataLoaded.value) {
+        // Проверяем подключен ли интернет
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
         val networkInfo = connectivityManager.getNetworkInfo(activeNetwork)
@@ -84,17 +85,18 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                     }
 
                     // Получаем рекомендации на данных координатах
-                    RecommentadionRepositoryImpl().getRecommendations(
+                    RecommendationsRepositoryImpl().getRecommendations(
                         context,
                         locationResponse.latitude,
                         locationResponse.longtitude
                     ) { recommendationsResponse ->
-                        recomendations.value = recommendationsResponse
+                        recomendations = recommendationsResponse
                         loadingStatus.value = LoadingState.READY // Меняем статус виджета на "загружен"
                     }
                 }
             }
         } else {
+            // Нет интернета
             loadingStatus.value = LoadingState.ERROR
         }
     }
@@ -141,11 +143,20 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
             )
 
             if (loadingStatus.value == LoadingState.LOADING) {
-                RecomendationSkeletonView()
-                RecomendationSkeletonView()
-                RecomendationSkeletonView()
+                SceletonView(Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
+                SceletonView(Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
+                SceletonView(Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
             } else if (
-                recomendations.value.isEmpty() ||
+                recomendations.isEmpty() ||
                 loadingStatus.value == LoadingState.ERROR
             ) {
                 Text(
@@ -157,7 +168,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                 )
             } else {
                 LazyColumn {
-                    items(recomendations.value) { item ->
+                    items(recomendations) { item ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()

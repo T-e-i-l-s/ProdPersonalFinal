@@ -2,12 +2,13 @@ package com.example.prodfinal.data.source
 
 import android.content.Context
 import com.example.prodfinal.domain.model.FullRecomendationModel
-import com.example.prodfinal.domain.model.RecomendationModel
-import com.example.prodfinal.domain.model.UserModel
 import com.google.gson.Gson
 import org.json.JSONObject
 
+// Класс работы с информацией о рекомендациях пользователем
+
 class RecomendationSource {
+    // Функция, которая проверяет, сохранены ли данные о локации в SharedPreferences
     fun isSaved(
         context: Context,
         id: String
@@ -16,6 +17,7 @@ class RecomendationSource {
         return sharedPref.contains(id)
     }
 
+    // Функция, которая сохраняет данные о локации в SharedPreferences
     fun saveRecomendationData(
         context: Context,
         recomendation: FullRecomendationModel
@@ -31,6 +33,7 @@ class RecomendationSource {
             .apply()
     }
 
+    // Функция, которая получает данные о локации из SharedPreferences
     fun getRecomendationData(
         context: Context,
         id: String
@@ -38,8 +41,15 @@ class RecomendationSource {
         // Получаем данные о пользователе из SharedPreferences
         val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         val recomendationString = sharedPref.getString(id, "")
+            ?: return FullRecomendationModel("", "", arrayListOf(), "", arrayListOf(), "")
 
-        // Переводим данные о пользователе в json и отдаем
+        // Переводим данные о пользователе в FullRecomendationModel и отдаем
+        return decodeRecomendationJson(recomendationString)
+    }
+
+    // Функция, которая переводит json строку в FullRecomendationModel
+    private fun decodeRecomendationJson(recomendationString: String): FullRecomendationModel {
+        // Парсим необходимые поля
         val recomendationJson = JSONObject(recomendationString)
 
         val photosJson = recomendationJson.getJSONArray("photos")
@@ -59,6 +69,7 @@ class RecomendationSource {
             mail = recomendationJson.getString("mail")
         }
 
+        // Отдаем данные
         return FullRecomendationModel(
             recomendationJson.getString("id"),
             recomendationJson.getString("title"),

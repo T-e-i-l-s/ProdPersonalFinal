@@ -18,10 +18,13 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.res.colorResource
 import com.example.prodfinal.R
 
+// Скелетон фотограции для экрана с информацией о рекомендации
+
 @Composable
 fun ImageSkeletonView () {
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition("")
 
+    // Анимация для градиента
     val translateAnimation = transition.animateFloat(
         initialValue = 0f,
         targetValue = 2500f,
@@ -36,6 +39,8 @@ fun ImageSkeletonView () {
         colorResource(id = R.color.sceleton1),
         colorResource(id = R.color.sceleton2),
     )
+
+    // Градиент
     val brush = Brush.linearGradient(
         colors = shimmerColors,
         start = Offset(translateAnimation.value, translateAnimation.value),

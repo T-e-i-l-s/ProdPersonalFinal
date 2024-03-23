@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.prodfinal.data.api.WeatherApi
 import com.example.prodfinal.domain.model.WeatherModel
 
+// Класс репозитория для WeatherApi
+
 class WeatherRepositoryImpl {
     fun getWeather(
         context: Context,

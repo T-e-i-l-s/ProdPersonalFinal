@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.util.Log
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.example.prodfinal.domain.model.LocationModel
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -18,14 +16,14 @@ private var onFinish: (result: LocationModel) -> Unit = {}
 
 // Класс для работы с локацией
 
-@Suppress("DEPRECATION")
 class Location(val context: Context) {
     // Функция для проверки разрешений и запроса локации
-    fun getLocation(onFinish2: (result: LocationModel) -> Unit) {
-        onFinish = onFinish2
+    fun getLocation(onFinishFun: (result: LocationModel) -> Unit) {
+        // Передаем функцию onFinishFun в onFinish
+        onFinish = onFinishFun
         if (!checkPermission()) { // Если нет разрешения на использование геолокации
             // Запрашиваем разрешения на геолокацию
-            requestPermissions(onFinish)
+            requestPermissions()
             return
         } else {
             // Делаем запрос на локацию
@@ -95,7 +93,7 @@ class Location(val context: Context) {
     }
 
     // Функция, которая запрашивает разрешения на использование геолокации
-    private fun requestPermissions(onFinish: (result: LocationModel) -> Unit) {
+    private fun requestPermissions() {
         val permissions = arrayOf(
             android.Manifest.permission.ACCESS_FINE_LOCATION,
             android.Manifest.permission.ACCESS_COARSE_LOCATION
@@ -107,15 +105,25 @@ class Location(val context: Context) {
         )
     }
 
+    /*
+    Функция, которая вызывается из MainActivity при
+    получении результатов запроса разрешений
+    для обработки результатов и повторного
+    запроса локации(при необходимости)
+     */
     fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        // Проверяем соответствие запроса
         if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLocation(onFinish)
-            } else {
+            // Проверяем результаты запроса
+            if (grantResults.isNotEmpty() &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) { // Разрешение получено
+                // Делаем повторный запрос на локацию
+                locationRequest(onFinish)
+            } else { // Нет разрешения
                 // Возвращаем "неудачный" ответ
                 onFinish(
                     LocationModel(

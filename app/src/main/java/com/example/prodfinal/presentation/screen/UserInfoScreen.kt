@@ -34,11 +34,10 @@ import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
 import com.example.prodfinal.presentation.view.UserInfoView
 
-private val isRegistered = mutableStateOf(false)
+private val isRegistered = mutableStateOf(false) // Авторизовал ли пользователь
 
 @Composable
 fun UserInfoScreen(context: Context, stackNavigator: NavController) {
-
     LaunchedEffect(true) {
         isRegistered.value = CurrentUserSource().isRegistered(context)
     }
@@ -61,7 +60,7 @@ fun UserInfoScreen(context: Context, stackNavigator: NavController) {
 // Экран с информацией о юзере
 @Composable
 fun Registered(context: Context) {
-    var userInfo = remember {
+    val userInfo = remember {
         mutableStateOf(
             UserModel(
                 "",

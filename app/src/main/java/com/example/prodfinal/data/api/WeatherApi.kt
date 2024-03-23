@@ -7,7 +7,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.data.mapper.WeatherMapper
 import org.json.JSONObject
-import kotlin.math.roundToInt
+import java.util.Locale
 
 // Класс для получения погоды на lat и lon
 
@@ -40,7 +40,7 @@ class WeatherApi {
                 // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
-            { error ->
+            {
                 // Обрабатываем ошибку(возвращаем "неудачный" ответ)
                 onFinish(
                     WeatherModel(
@@ -61,10 +61,10 @@ class WeatherApi {
     }
 
     // Функция, которая обрабатывает json погоды в WeatherItem
-    fun handleResponse(response: String, onFinish: (response: WeatherModel) -> Unit) {
+    private fun handleResponse(response: String, onFinish: (response: WeatherModel) -> Unit) {
         val json = JSONObject(response)
         // Основные параметры(температура и т.д.)
-        val main_info = json.getJSONObject("main")
+        val mainInfo = json.getJSONObject("main")
         // Информация о погоде(название, иконка и т.д.)
         val weatherInfo = json
             .getJSONArray("weather")
@@ -72,7 +72,7 @@ class WeatherApi {
         // Название погоды(ясно и т.д.)
         val weatherName = weatherInfo
             .getString("description")
-            .capitalize()
+            .capitalize(Locale.ROOT)
         // Иконка погоды в формате https://openweathermap.org/weather-conditions
         val weatherIcon = weatherInfo
             .getString("icon")
@@ -87,10 +87,10 @@ class WeatherApi {
                     city,
                     weatherName,
                     weatherIcon,
-                    main_info.getString("temp"),
-                    main_info.getString("temp_min"),
-                    main_info.getString("temp_max"),
-                    main_info.getString("feels_like"),
+                    mainInfo.getString("temp"),
+                    mainInfo.getString("temp_min"),
+                    mainInfo.getString("temp_max"),
+                    mainInfo.getString("feels_like"),
                 )
             )
         )
