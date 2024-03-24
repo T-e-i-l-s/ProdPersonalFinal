@@ -39,11 +39,12 @@ import com.example.prodfinal.domain.authorization.Authorization
 import com.example.prodfinal.domain.authorization.Hash
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
-import com.example.prodfinal.navigation.currentScreen
+import com.example.prodfinal.navigation.stackCurrentRoute
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
 // Данные с экрана "Создать аккаунт"
 private val signinUsername = mutableStateOf("")
+private val signinPhoto = mutableStateOf("")
 private val signinMail = mutableStateOf("")
 private val signinAddress = mutableStateOf("")
 private val signinPhone = mutableStateOf("")
@@ -54,6 +55,38 @@ private val signinPassword = mutableStateOf("")
 private val loginUsername = mutableStateOf("")
 private val loginPassword = mutableStateOf("")
 private val isCorrect = mutableStateOf(true)
+
+fun authorize (context: Context, navController: NavController, mode: AuthState,) {
+    if (mode == AuthState.LOGIN) { // Вход
+        // Проверяем корректность введеных данных
+        Authorization().checkAccess(
+            context,
+            loginUsername.value,
+            Hash().encode(loginPassword.value)
+        ) {
+            if (it) { // Все введено верно
+                navController.navigate("main_component")
+            } else { // Пользователь не найден
+                isCorrect.value = false
+            }
+        }
+    } else if (mode == AuthState.SIGNIN) { // Регистрация
+        // Создаем UserModel из введеных данных
+        val userInfo = UserModel(
+            signinUsername.value,
+            signinPhoto.value,
+            signinMail.value,
+            signinBirthday.value,
+            signinAddress.value,
+            signinPhone.value,
+            Hash().encode(signinPassword.value),
+        )
+        // Создаем пользователя и сохраняем
+        Authorization().createUser(context, userInfo)
+        CurrentUserSource().saveCurrentUser(context, userInfo)
+        navController.navigate("main_component")
+    }
+}
 
 @Composable
 fun AuthorisationScreen(context: Context, navController: NavController) {
@@ -73,11 +106,12 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             RandomUserRepositoryImpl().getRandomUser(
                 context
             ) { response ->
-                signinUsername.value = response.name
+                signinUsername.value = response.username
+                signinPhoto.value = response.photo
                 signinMail.value = response.mail
                 signinBirthday.value = response.birthday
                 signinAddress.value = response.address
-                signinPhone.value = response.phone_number
+                signinPhone.value = response.phoneNumber
                 signinPassword.value = response.password
             }
         } else {
@@ -101,7 +135,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    if (currentScreen.value == "authorization_screen") {
+                    if (stackCurrentRoute.value == "authorization_screen") {
                         navController.popBackStack()
                     }
                 }
@@ -141,31 +175,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        if (mode.value == AuthState.LOGIN) {
-                            Authorization().checkAccess(
-                                context,
-                                loginUsername.value,
-                                Hash().encode(loginPassword.value)
-                            ) {
-                                if (it) {
-                                    navController.navigate("main_component")
-                                } else {
-                                    isCorrect.value = false
-                                }
-                            }
-                        } else if (mode.value == AuthState.SIGNIN) {
-                            val userInfo = UserModel(
-                                signinUsername.value,
-                                signinMail.value,
-                                signinBirthday.value,
-                                signinAddress.value,
-                                signinPhone.value,
-                                Hash().encode(signinPassword.value),
-                            )
-                            Authorization().createUser(context, userInfo)
-                            CurrentUserSource().saveCurrentUser(context, userInfo)
-                            navController.navigate("main_component")
-                        }
+                        authorize(context, navController, mode.value)
                     },
                     colors = ButtonDefaults.buttonColors(
                         colorResource(id = R.color.text),

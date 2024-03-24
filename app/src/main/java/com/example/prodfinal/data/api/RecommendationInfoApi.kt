@@ -3,7 +3,7 @@ package com.example.prodfinal.data.api
 import android.content.Context
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.prodfinal.domain.model.FullRecomendationModel
+import com.example.prodfinal.domain.model.FullRecommendationModel
 import org.json.JSONObject
 
 // Класс для получения полной информации о месте по fsq_id
@@ -13,7 +13,7 @@ class RecommendationInfoApi {
     fun getRecommendationInfo(
         context: Context,
         fsqId: String,
-        onFinish: (FullRecomendationModel) -> Unit
+        onFinish: (FullRecommendationModel) -> Unit
     ) {
         // URL запроса
         val url = "https://api.foursquare.com/v3/places/$fsqId?fields=" +
@@ -35,9 +35,7 @@ class RecommendationInfoApi {
                 // Обрабатываем результат и отдаем
                 handleResponse(JSONObject(response), onFinish)
             },
-            { error ->
-                // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-            }
+            {}
         ) {
             // Добавляем хедеры к запросу
             override fun getHeaders(): MutableMap<String, String> {
@@ -52,10 +50,10 @@ class RecommendationInfoApi {
         requestQueue.add(stringRequest)
     }
 
-    // Функция, которая парсит все необходимые данные и возвращает как FullRecomendationModel
+    // Функция, которая парсит все необходимые данные и возвращает как FullRecommendationModel
     fun handleResponse(
         response: JSONObject,
-        onFinish: (FullRecomendationModel) -> Unit
+        onFinish: (FullRecommendationModel) -> Unit
     ) {
         // Парсим все необходимое
         val id = response.getString("fsq_id")
@@ -72,11 +70,11 @@ class RecommendationInfoApi {
             categories.add(category.getString("short_name"))
         }
 
-        val images = ArrayList<String>()
-        val imagesArray = response.getJSONArray("photos")
-        for (i in 0..<imagesArray.length()) {
-            val image = imagesArray.getJSONObject(i)
-            images.add(
+        val photos = ArrayList<String>()
+        val photosJsonArray = response.getJSONArray("photos")
+        for (i in 0..<photosJsonArray.length()) {
+            val image = photosJsonArray.getJSONObject(i)
+            photos.add(
                 image.getString("prefix") + "original" + image.getString("suffix")
             )
         }
@@ -86,10 +84,10 @@ class RecommendationInfoApi {
 
         // Отдаем
         onFinish(
-            FullRecomendationModel(
+            FullRecommendationModel(
                 id,
                 title,
-                images,
+                photos,
                 address,
                 categories,
                 email,

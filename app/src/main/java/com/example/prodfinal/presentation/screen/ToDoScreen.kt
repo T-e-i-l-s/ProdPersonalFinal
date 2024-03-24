@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -31,6 +30,7 @@ import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.source.ToDoSource
 import com.example.prodfinal.domain.model.ToDoItemModel
+import com.example.prodfinal.domain.state.ToDoState
 import com.example.prodfinal.presentation.view.PlaceToDoView
 import com.example.prodfinal.presentation.view.TextToDoView
 
@@ -46,10 +46,12 @@ fun ToDoScreen(context: Context, navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.background))
-            .padding(10.dp, 10.dp, 10.dp, 0.dp)
+            .padding(10.dp, 0.dp, 10.dp, 0.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 10.dp, 0.dp, 10.dp),
         ) {
             Text(
                 text = "Мой досуг",
@@ -74,8 +76,8 @@ fun ToDoScreen(context: Context, navController: NavController) {
 
         LazyColumn {
             itemsIndexed(todoList.value) { index, item ->
-                Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
-                    if (item.mode == "text") {
+                Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)) {
+                    if (item.mode == ToDoState.TEXT) {
                         TextToDoView(item) {
                             todoList.value = ToDoSource().deleteToDo(context, index)
                         }

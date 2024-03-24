@@ -1,7 +1,9 @@
 package com.example.prodfinal.domain.model
 
+import com.example.prodfinal.domain.state.ToDoState
+
 data class ToDoItemModel(
-    val mode: String,
+    val mode: ToDoState,
     val name: String,
     val description: String,
     val date: String,

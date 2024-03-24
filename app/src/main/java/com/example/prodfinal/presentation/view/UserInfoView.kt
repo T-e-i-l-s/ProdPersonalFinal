@@ -67,7 +67,7 @@ fun UserInfoView (
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
             Text(
-                text = item.phone_number,
+                text = item.phoneNumber,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 modifier = Modifier.weight(1f),

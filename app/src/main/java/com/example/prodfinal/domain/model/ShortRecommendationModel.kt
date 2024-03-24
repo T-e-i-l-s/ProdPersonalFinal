@@ -1,11 +1,9 @@
 package com.example.prodfinal.domain.model
 
-data class FullRecomendationModel(
+data class ShortRecommendationModel(
     val id: String,
     val title: String,
-//    val description: String,
-    val photos: ArrayList<String>,
+    val image: String,
     val address: String,
     val category: ArrayList<String>,
-    val mail: String?,
 )

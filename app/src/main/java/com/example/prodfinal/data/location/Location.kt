@@ -6,8 +6,8 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.app.ActivityCompat
 import com.example.prodfinal.domain.model.LocationModel
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
@@ -27,12 +27,12 @@ class Location(val context: Context) {
             return
         } else {
             // Делаем запрос на локацию
-            locationRequest(onFinish)
+            locationRequest()
         }
     }
 
     // Функция получения локации
-    private fun locationRequest(onFinish: (result: LocationModel) -> Unit) {
+    private fun locationRequest() {
         // Проверяем разрешения на использование геолокации
         if (checkPermission()) {
             // Проверяем голокацию
@@ -41,10 +41,9 @@ class Location(val context: Context) {
                 val location = LocationServices.getFusedLocationProviderClient(context)
                 // Делаем запрос на геопозицию
                 location.getCurrentLocation(
-                    LocationRequest.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
+                    Priority.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
                         override fun onCanceledRequested(p0: OnTokenCanceledListener) =
                             CancellationTokenSource().token
-
                         override fun isCancellationRequested() = false
                     }
                 ).addOnCompleteListener { task ->
@@ -112,27 +111,21 @@ class Location(val context: Context) {
     запроса локации(при необходимости)
      */
     fun onRequestPermissionsResult(
-        requestCode: Int,
-        grantResults: IntArray
+        isGranted: Boolean
     ) {
-        // Проверяем соответствие запроса
-        if (requestCode == 100) {
-            // Проверяем результаты запроса
-            if (grantResults.isNotEmpty() &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) { // Разрешение получено
-                // Делаем повторный запрос на локацию
-                locationRequest(onFinish)
-            } else { // Нет разрешения
-                // Возвращаем "неудачный" ответ
-                onFinish(
-                    LocationModel(
-                        false,
-                        0.0,
-                        0.0,
-                    )
+        // Проверяем результаты запроса
+        if (isGranted) { // Разрешение получено
+            // Делаем повторный запрос на локацию
+            locationRequest()
+        } else { // Нет разрешения
+            // Возвращаем "неудачный" ответ
+            onFinish(
+                LocationModel(
+                    false,
+                    0.0,
+                    0.0,
                 )
-            }
+            )
         }
     }
 }

@@ -40,20 +40,7 @@ class WeatherApi {
                 // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
-            {
-                // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                onFinish(
-                    WeatherModel(
-                        "ERROR",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
-                        "-",
-                    )
-                )
-            }
+            {}
         )
 
         // Добавляем запрос в очередь
@@ -63,22 +50,20 @@ class WeatherApi {
     // Функция, которая обрабатывает json погоды в WeatherItem
     private fun handleResponse(response: String, onFinish: (response: WeatherModel) -> Unit) {
         val json = JSONObject(response)
-        // Основные параметры(температура и т.д.)
+
         val mainInfo = json.getJSONObject("main")
-        // Информация о погоде(название, иконка и т.д.)
+
         val weatherInfo = json
             .getJSONArray("weather")
             .getJSONObject(0)
-        // Название погоды(ясно и т.д.)
+
         val weatherName = weatherInfo
             .getString("description")
-            .capitalize(Locale.ROOT)
-        // Иконка погоды в формате https://openweathermap.org/weather-conditions
-        val weatherIcon = weatherInfo
-            .getString("icon")
-        // Город
-        val city = json
-            .getString("name")
+            .replaceFirstChar(Char::titlecase)
+
+        val weatherIcon = weatherInfo.getString("icon")
+
+        val city = json.getString("name")
 
         // Отдаем погоду виджету
         onFinish(

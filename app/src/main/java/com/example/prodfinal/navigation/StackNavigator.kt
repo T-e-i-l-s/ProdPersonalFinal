@@ -13,7 +13,7 @@ import com.example.prodfinal.presentation.screen.CreateGoalScreen
 import com.example.prodfinal.presentation.screen.CreateToDoScreen
 import com.example.prodfinal.presentation.screen.RecomendationScreen
 
-var currentScreen = mutableStateOf("main_component") // Открытый экран в графе stack навигации
+var stackCurrentRoute = mutableStateOf("main_component") // Открытый экран в графе stack навигации
 
 // Граф Stack навигации(между графом с Tab навигацией и вспомогательными экранами)
 
@@ -24,11 +24,11 @@ fun StackNavigator () {
         navController = navController,
         startDestination = "main_component"
     ) {
-        // Граф Tab навигации
+        // Граф таб навигации
         composable(
             "main_component"
         ) {
-            currentScreen.value = "main_component"
+            stackCurrentRoute.value = "main_component"
             TabNavigator(navController)
         }
 
@@ -36,7 +36,7 @@ fun StackNavigator () {
         composable(
             "authorization_screen/{mode}"
         ) {
-            currentScreen.value = "authorization_screen"
+            stackCurrentRoute.value = "authorization_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             AuthorisationScreen(LocalContext.current, navController)
         }
@@ -45,7 +45,7 @@ fun StackNavigator () {
         composable(
             "recommendation_screen/{fsq_id}",
         ) {
-            currentScreen.value = "recommendation_screen"
+            stackCurrentRoute.value = "recommendation_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             RecomendationScreen(LocalContext.current, navController)
         }
@@ -54,7 +54,7 @@ fun StackNavigator () {
         composable(
             "create_todo_screen/{mode}/{place_id}/{place_name}"
         ) {
-            currentScreen.value = "create_todo_screen"
+            stackCurrentRoute.value = "create_todo_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             CreateToDoScreen(LocalContext.current, navController)
         }
@@ -63,7 +63,7 @@ fun StackNavigator () {
         composable(
             "create_goal_screen"
         ) {
-            currentScreen.value = "create_goal_screen"
+            stackCurrentRoute.value = "create_goal_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
             CreateGoalScreen(LocalContext.current, navController)
         }

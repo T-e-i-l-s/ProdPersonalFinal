@@ -39,9 +39,9 @@ import coil.compose.AsyncImage
 import com.example.prodfinal.R
 import com.example.prodfinal.data.repository.RecommendationInfoRepositoryImpl
 import com.example.prodfinal.data.source.RecomendationSource
-import com.example.prodfinal.domain.model.FullRecomendationModel
+import com.example.prodfinal.domain.model.FullRecommendationModel
 import com.example.prodfinal.domain.state.LoadingState
-import com.example.prodfinal.navigation.currentScreen
+import com.example.prodfinal.navigation.stackCurrentRoute
 import com.example.prodfinal.presentation.view.ImageSkeletonView
 import com.example.prodfinal.presentation.view.NoPhotoView
 
@@ -59,7 +59,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
     // Информация о рекомендации
     val placeInfo = remember {
         mutableStateOf(
-            FullRecomendationModel(
+            FullRecommendationModel(
                 "",
                 "",
                 ArrayList(),
@@ -72,7 +72,10 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
     LaunchedEffect(true) {
         // Получаем fsq_id
-        fsqId.value = "" + navController.currentBackStackEntry?.arguments?.getString("fsq_id")
+        fsqId.value = navController.currentBackStackEntry
+            ?.arguments
+            ?.getString("fsq_id").toString()
+
         // Делаем запрос на данные о рекомендации
         RecommendationInfoRepositoryImpl().getRecommendationInfo(
             context,
@@ -99,7 +102,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    if (currentScreen.value == "recommendation_screen") {
+                    if (stackCurrentRoute.value == "recommendation_screen") {
                         navController.popBackStack()
                     }
                 }

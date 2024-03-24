@@ -1,10 +1,11 @@
 package com.example.prodfinal.domain.model
 
 data class UserModel(
-    var name: String,
+    var username: String,
+    var photo: String,
     var mail: String,
     var birthday: String,
     var address: String,
-    var phone_number: String,
+    var phoneNumber: String,
     var password: String,
 )

@@ -1,13 +1,10 @@
 package com.example.prodfinal.presentation.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,13 +27,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.prodfinal.R
-import com.example.prodfinal.domain.model.RecomendationModel
+import com.example.prodfinal.domain.model.ShortRecommendationModel
 
 // Блок рекомендации для главного экрана
 
 @Composable
 fun RecomendationView(
-    recomendation: RecomendationModel,
+    recomendation: ShortRecommendationModel,
     navController: NavController
 ) {
     Column(

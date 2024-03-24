@@ -91,7 +91,7 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                         }
                         // Температура
                         Text(
-                            text = weatherItem.currentTemprature,
+                            text = weatherItem.currentTemperature,
                             color = colorResource(id = R.color.text),
                             fontSize = 25.sp,
                             fontWeight = FontWeight(700),
@@ -99,8 +99,8 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                         )
                         // Мин и макс температура
                         Text(
-                            text = "От ${weatherItem.minTemprature} " +
-                                    "до ${weatherItem.maxTemprature}",
+                            text = "От ${weatherItem.minTemperature} " +
+                                    "до ${weatherItem.maxTemperature}",
                             color = colorResource(id = R.color.text),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))

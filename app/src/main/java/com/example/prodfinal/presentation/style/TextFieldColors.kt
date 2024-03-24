@@ -10,8 +10,8 @@ import com.example.prodfinal.R
 // Единый стиль для TextField
 
 @Composable
-fun getTextFieldColors() : TextFieldColors {
-    return TextFieldDefaults.colors(
+fun getTextFieldColors() : TextFieldColors =
+    TextFieldDefaults.colors(
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         focusedContainerColor = colorResource(id = R.color.main),
@@ -20,4 +20,3 @@ fun getTextFieldColors() : TextFieldColors {
         focusedLabelColor = colorResource(id = R.color.text),
         focusedTextColor = colorResource(id = R.color.text),
     )
-}

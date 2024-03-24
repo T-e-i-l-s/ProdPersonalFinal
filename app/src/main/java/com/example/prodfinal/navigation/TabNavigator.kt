@@ -1,10 +1,8 @@
 package com.example.prodfinal.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -36,9 +34,9 @@ import com.example.prodfinal.presentation.screen.ToDoScreen
 import com.example.prodfinal.presentation.screen.UserInfoScreen
 
 // Индекс открытой страницы в массиве
-var selectedItem = mutableIntStateOf(0)
-// Route открытой страницы
-var currentRoute = mutableStateOf("main_screen")
+var tabSelectedItem = mutableIntStateOf(0)
+// Route открытой страницы в тфб графе
+var tabCurrentRoute = mutableStateOf("main_screen")
 
 // Граф Tab навигации(между графом с Tab навигацией и вспомогательными экранами)
 @Composable
@@ -119,10 +117,10 @@ fun TabView(navController: NavController, tabs: List<TabBarItemModel>) {
                         fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                     )
                 },
-                selected = selectedItem.intValue == index,
+                selected = tabSelectedItem.intValue == index,
                 onClick = {
-                    selectedItem.intValue = index
-                    currentRoute.value = item.route
+                    tabSelectedItem.intValue = index
+                    tabCurrentRoute.value = item.route
                     navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
@@ -141,19 +139,23 @@ fun TabView(navController: NavController, tabs: List<TabBarItemModel>) {
 // Navigation graph
 @Composable
 fun Navigations(navController: NavHostController, stackNavigator: NavController) {
-    NavHost(navController, startDestination = currentRoute.value) {
+    NavHost(navController, startDestination = tabCurrentRoute.value) {
+        // Главный экран
         composable("main_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.weather))
             MainScreen(LocalContext.current, stackNavigator)
         }
+        // Мой досуг
         composable("todo_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.background))
             ToDoScreen(LocalContext.current, stackNavigator)
         }
+        // Бюджет
         composable("budget_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.background))
             BudgetScreen(LocalContext.current, stackNavigator)
         }
+        // Профиль
         composable("user_info_screen") {
             ChangeStatusBarColor(colorResource(id = R.color.background))
             UserInfoScreen(LocalContext.current, stackNavigator)

@@ -12,9 +12,9 @@ class WeatherMapper {
             weather.city,
             weather.weather,
             weather.icon,
-            "" + weather.currentTemprature.toDouble().roundToInt() + "°C",
-            "" + weather.minTemprature.toDouble().roundToInt() + "°C",
-            "" + weather.maxTemprature.toDouble().roundToInt() + "°C",
+            "" + weather.currentTemperature.toDouble().roundToInt() + "°C",
+            "" + weather.minTemperature.toDouble().roundToInt() + "°C",
+            "" + weather.maxTemperature.toDouble().roundToInt() + "°C",
             "Ощущается как ${weather.feelsLike.toDouble().roundToInt()}°C",
         )
     }

@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -33,16 +32,15 @@ import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.source.ToDoSource
 import com.example.prodfinal.domain.model.ToDoItemModel
-import com.example.prodfinal.navigation.currentRoute
-import com.example.prodfinal.navigation.currentScreen
-import com.example.prodfinal.navigation.selectedItem
+import com.example.prodfinal.domain.state.ToDoState
+import com.example.prodfinal.navigation.stackCurrentRoute
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
 @Composable
 fun CreateToDoScreen(context: Context, navController: NavController) {
-    // Режим экрана(TEXT или PLACE)
+    // Режим экрана
     val mode = remember {
-        mutableStateOf("")
+        mutableStateOf(ToDoState.TEXT)
     }
     // Id места(нужно для PlaceToDo)
     val placeId = remember {
@@ -67,10 +65,17 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
     }
 
     LaunchedEffect(true) {
-        mode.value = "" + navController.currentBackStackEntry?.arguments?.getString("mode")
-        placeId.value = "" + navController.currentBackStackEntry?.arguments?.getString("place_id")
-        placeName.value =
-            "" + navController.currentBackStackEntry?.arguments?.getString("place_name")
+        mode.value = ToDoState.valueOf(
+            navController.currentBackStackEntry
+                ?.arguments
+                ?.getString("mode").toString()
+        )
+        placeId.value = navController.currentBackStackEntry
+            ?.arguments
+            ?.getString("place_id").toString()
+        placeName.value = navController.currentBackStackEntry
+            ?.arguments
+            ?.getString("place_name").toString()
     }
 
     Column(
@@ -87,13 +92,13 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    if (currentScreen.value == "create_todo_screen") {
+                    if (stackCurrentRoute.value == "create_todo_screen") {
                         navController.popBackStack()
                     }
                 }
         )
 
-        if (mode.value == "TEXT") {
+        if (mode.value == ToDoState.TEXT) {
             TextToDo(toDoName, toDoDescription, toDoDate)
         } else {
             PlaceToDo(toDoName, toDoDate, "" + placeName.value)
@@ -107,10 +112,11 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth(),
                 onClick = {
+                    // Получаем ToDoItemModel из полученных данных
                     val result: ToDoItemModel
-                    if (mode.value == "TEXT") {
+                    if (mode.value == ToDoState.TEXT) {
                         result = ToDoItemModel(
-                            "text",
+                            ToDoState.TEXT,
                             toDoName.value,
                             toDoDescription.value,
                             toDoDate.value,
@@ -119,7 +125,7 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                         )
                     } else {
                         result = ToDoItemModel(
-                            "place",
+                            ToDoState.PLACE,
                             toDoName.value,
                             "",
                             toDoDate.value,
@@ -128,16 +134,17 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                         )
                     }
 
-                    toDoName.value = ""
-                    toDoDescription.value = ""
-                    toDoDate.value = ""
-
+                    // Сохраняем данные
                     ToDoSource().addToDo(
                         context,
                         result
                     )
-                    selectedItem.value = 1
-                    currentRoute.value = "todo_screen"
+
+                    // Сбрасываем все поля
+                    toDoName.value = ""
+                    toDoDescription.value = ""
+                    toDoDate.value = ""
+
                     navController.navigate("main_component")
                 },
                 colors = ButtonDefaults.buttonColors(

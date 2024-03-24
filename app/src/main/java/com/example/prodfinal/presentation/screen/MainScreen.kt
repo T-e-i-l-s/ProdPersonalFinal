@@ -30,15 +30,13 @@ import com.example.prodfinal.R
 import com.example.prodfinal.data.location.Location
 import com.example.prodfinal.data.repository.RecommendationsRepositoryImpl
 import com.example.prodfinal.data.repository.WeatherRepositoryImpl
-import com.example.prodfinal.domain.model.RecomendationModel
+import com.example.prodfinal.domain.model.ShortRecommendationModel
 import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.domain.state.LoadingState
 import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.SceletonView
 import com.example.prodfinal.presentation.view.WeatherView
 
-// Были ли загружены данные
-private var isDataLoaded = mutableStateOf(false)
 
 // Статус виджета погоды(загружается, нет доступа, загружен)
 private val loadingStatus = mutableStateOf(LoadingState.LOADING)
@@ -58,17 +56,18 @@ private val weatherInfo =
     )
 
 // Список рекомендаций(места рядом)
-private var recomendations = mutableListOf<RecomendationModel>()
+private var recomendations = mutableListOf<ShortRecommendationModel>()
 
 @Composable
 fun MainScreen(context: Context, stackNavigator: NavController) {
-    isDataLoaded.value = true
-    LaunchedEffect(!isDataLoaded.value) {
+    LaunchedEffect(true) {
         // Проверяем подключен ли интернет
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
         val networkInfo = connectivityManager.getNetworkInfo(activeNetwork)
         val isConnected = networkInfo != null && networkInfo.isConnected
+
         if (isConnected) {
             // Получаем данные о геолокации
             Location(context).getLocation { locationResponse ->
@@ -91,7 +90,8 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                         locationResponse.longtitude
                     ) { recommendationsResponse ->
                         recomendations = recommendationsResponse
-                        loadingStatus.value = LoadingState.READY // Меняем статус виджета на "загружен"
+                        loadingStatus.value =
+                            LoadingState.READY // Меняем статус виджета на "загружен"
                     }
                 }
             }
@@ -143,18 +143,24 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
             )
 
             if (loadingStatus.value == LoadingState.LOADING) {
-                SceletonView(Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
-                SceletonView(Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
-                SceletonView(Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(0.dp, 0.dp, 0.dp, 10.dp))
+                SceletonView(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                )
+                SceletonView(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                )
+                SceletonView(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                )
             } else if (
                 recomendations.isEmpty() ||
                 loadingStatus.value == LoadingState.ERROR

@@ -22,7 +22,7 @@ class Authorization {
             // Проходим по всем юзерам и проверяем есть ли совпадения с введенными данными
             for (i in 0..<usersList.size) {
                 // Проверяем совпадения
-                if (username == usersList[i].name &&
+                if (username == usersList[i].username &&
                     passwordDecoded == Hash().decode(usersList[i].password)
                 ) { // Введенный пользователь найден
                     // Сохраняем авторизованного пользователя в кеш
@@ -77,11 +77,12 @@ class Authorization {
             val user = json.getJSONObject(i)
             usersList.add(
                 UserModel(
-                    user.getString("name"),
+                    user.getString("username"),
+                    user.getString("photo"),
                     user.getString("mail"),
                     user.getString("birthday"),
                     user.getString("address"),
-                    user.getString("phone_number"),
+                    user.getString("phoneNumber"),
                     user.getString("password"),
                 )
             )

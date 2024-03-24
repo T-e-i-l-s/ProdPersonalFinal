@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background">#EDEDED</color>
-    <color name="weather">#C7D3FF</color>
+    <color name="weather">#A4C5FF</color>
     <color name="main">#D5D5D5</color>
     <color name="light_main">#E1E1E1</color>
     <color name="no_image">#C1C1C1</color>

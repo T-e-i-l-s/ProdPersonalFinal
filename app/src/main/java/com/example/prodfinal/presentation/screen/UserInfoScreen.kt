@@ -32,9 +32,10 @@ import com.example.prodfinal.R
 import com.example.prodfinal.data.source.CurrentUserSource
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
+import com.example.prodfinal.presentation.view.ProfileView
 import com.example.prodfinal.presentation.view.UserInfoView
 
-private val isRegistered = mutableStateOf(false) // Авторизовал ли пользователь
+private val isRegistered = mutableStateOf(false) // Авторизован ли пользователь
 
 @Composable
 fun UserInfoScreen(context: Context, stackNavigator: NavController) {
@@ -69,6 +70,7 @@ fun Registered(context: Context) {
                 "",
                 "",
                 "",
+                "",
             )
         )
     }
@@ -84,9 +86,9 @@ fun Registered(context: Context) {
     ) {
         Row {
             Text(
-                text = userInfo.value.name,
+                text = "Профиль",
                 color = colorResource(id = R.color.text),
-                fontSize = 19.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight(700),
                 modifier = Modifier
                     .padding(5.dp)
@@ -107,12 +109,16 @@ fun Registered(context: Context) {
         }
 
         Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+            ProfileView(userInfo.value)
+        }
+
+        Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
             UserInfoView(userInfo.value)
         }
     }
 }
 
-// Экран с предложение авторизоваться
+// Экран с предложением авторизоваться
 @Composable
 fun NotRegistered(context: Context, stackNavigator: NavController) {
     Text(

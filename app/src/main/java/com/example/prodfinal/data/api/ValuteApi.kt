@@ -8,7 +8,6 @@ import com.example.prodfinal.data.mapper.ValuteMapper
 import com.example.prodfinal.domain.model.ValuteExchangeModel
 import com.example.prodfinal.domain.state.ValuteRate
 import org.json.JSONObject
-import java.math.BigDecimal
 
 // Класс для получения курса валют
 
@@ -32,26 +31,14 @@ class ValuteApi {
                 // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
-            {
-                // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-                onFinish(
-                    ValuteExchangeModel(
-                        BigDecimal(0),
-                        BigDecimal(0),
-                        ValuteRate.FALL,
-                        BigDecimal(0),
-                        BigDecimal(0),
-                        ValuteRate.FALL,
-                    )
-                )
-            }
+            {}
         )
 
         // Добавляем запрос в очередь
         requestQueue.add(stringRequest)
     }
 
-    // Функция, которая обрабатывает результат и отдает во view
+    // Функция, которая обрабатывает результат и отдает виджету
     private fun handleResponse(
         response: String,
         onFinish: (result: ValuteExchangeModel) -> Unit
@@ -62,7 +49,7 @@ class ValuteApi {
         val usd = valute.getJSONObject("USD")
         val eur = valute.getJSONObject("EUR")
 
-        // Отдаем во View
+        // Отдаем виджету
         onFinish(
             ValuteMapper().invoke(
                 ValuteExchangeModel(

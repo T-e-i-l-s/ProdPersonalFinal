@@ -32,7 +32,7 @@ import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.data.source.BudgetSource
 import com.example.prodfinal.domain.model.BudgetGoalModel
-import com.example.prodfinal.navigation.currentScreen
+import com.example.prodfinal.navigation.stackCurrentRoute
 import com.example.prodfinal.presentation.style.getTextFieldColors
 import java.math.BigDecimal
 
@@ -61,7 +61,7 @@ fun CreateGoalScreen(context: Context, navController: NavController) {
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
-                    if (currentScreen.value == "create_goal_screen") {
+                    if (stackCurrentRoute.value == "create_goal_screen") {
                         navController.popBackStack()
                     }
                 }

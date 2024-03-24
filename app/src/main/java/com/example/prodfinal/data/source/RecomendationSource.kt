@@ -1,7 +1,7 @@
 package com.example.prodfinal.data.source
 
 import android.content.Context
-import com.example.prodfinal.domain.model.FullRecomendationModel
+import com.example.prodfinal.domain.model.FullRecommendationModel
 import com.google.gson.Gson
 import org.json.JSONObject
 
@@ -20,7 +20,7 @@ class RecomendationSource {
     // Функция, которая сохраняет данные о локации в SharedPreferences
     fun saveRecomendationData(
         context: Context,
-        recomendation: FullRecomendationModel
+        recomendation: FullRecommendationModel
     ) {
         // Переводим в json
         val gson = Gson()
@@ -37,18 +37,18 @@ class RecomendationSource {
     fun getRecomendationData(
         context: Context,
         id: String
-    ): FullRecomendationModel {
-        // Получаем данные о пользователе из SharedPreferences
+    ): FullRecommendationModel {
+        // Получаем данные о локации из SharedPreferences
         val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         val recomendationString = sharedPref.getString(id, "")
-            ?: return FullRecomendationModel("", "", arrayListOf(), "", arrayListOf(), "")
+            ?: return FullRecommendationModel("", "", arrayListOf(), "", arrayListOf(), "")
 
-        // Переводим данные о пользователе в FullRecomendationModel и отдаем
+        // Переводим данные о локации в FullRecomendationModel и отдаем
         return decodeRecomendationJson(recomendationString)
     }
 
     // Функция, которая переводит json строку в FullRecomendationModel
-    private fun decodeRecomendationJson(recomendationString: String): FullRecomendationModel {
+    private fun decodeRecomendationJson(recomendationString: String): FullRecommendationModel {
         // Парсим необходимые поля
         val recomendationJson = JSONObject(recomendationString)
 
@@ -70,7 +70,7 @@ class RecomendationSource {
         }
 
         // Отдаем данные
-        return FullRecomendationModel(
+        return FullRecommendationModel(
             recomendationJson.getString("id"),
             recomendationJson.getString("title"),
             photos,

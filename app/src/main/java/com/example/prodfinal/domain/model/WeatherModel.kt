@@ -4,8 +4,8 @@ data class WeatherModel(
     val city: String,
     val weather: String,
     val icon: String,
-    val currentTemprature: String,
-    val minTemprature: String,
-    val maxTemprature: String,
+    val currentTemperature: String,
+    val minTemperature: String,
+    val maxTemperature: String,
     val feelsLike: String,
 )

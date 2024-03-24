@@ -3,7 +3,7 @@ package com.example.prodfinal.data.api
 import android.content.Context
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.prodfinal.domain.model.RecomendationModel
+import com.example.prodfinal.domain.model.ShortRecommendationModel
 import org.json.JSONObject
 
 // Класс для получения рекомендаций(мест рядом)
@@ -14,7 +14,7 @@ class RecommendationsApi {
         context: Context,
         lat: Double,
         lon: Double,
-        onFinish: (MutableList<RecomendationModel>) -> Unit
+        onFinish: (MutableList<ShortRecommendationModel>) -> Unit
     ) {
         // URL запроса
         val url = "https://api.foursquare.com/v3/places/nearby?fields=" +
@@ -35,9 +35,7 @@ class RecommendationsApi {
                 // Обрабатываем результат и отдаем
                 handleResponse(response, onFinish)
             },
-            {
-                // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-            }
+            {}
         ) {
             // Добавляем хедеры к запросу
             override fun getHeaders(): MutableMap<String, String> {
@@ -52,33 +50,33 @@ class RecommendationsApi {
         requestQueue.add(stringRequest)
     }
 
-    // Функция, которая обрабатывает json всех локаций в mutableListOf<RecomendationModel>
+    // Функция, которая обрабатывает json всех локаций в mutableListOf<ShortRecommendationModel>
     fun handleResponse(
         response: String,
-        onFinish: (MutableList<RecomendationModel>) -> Unit
+        onFinish: (MutableList<ShortRecommendationModel>) -> Unit
     ) {
         // Создаем новый список
-        val recomendations = mutableListOf<RecomendationModel>()
+        val recommendations = mutableListOf<ShortRecommendationModel>()
         // Получаем json из ответа апи
         val json = JSONObject(response)
         // Получаем json массив мест
-        val recomendationsArray = json.getJSONArray("results")
+        val recommendationsArray = json.getJSONArray("results")
         // Проходим по всем элементам jsonArray и переводим их в ArrayList
-        for (i in 0..<recomendationsArray.length()) {
+        for (i in 0..<recommendationsArray.length()) {
             // Получаем json одной из локаций и обрабатываем
-            val recomendation: RecomendationModel =
-                handleRecomendationJson(recomendationsArray.getJSONObject(i))
+            val recommendation: ShortRecommendationModel =
+                handleRecommendationJson(recommendationsArray.getJSONObject(i))
             // Добавляем элемент к списку
-            recomendations.add(recomendation)
+            recommendations.add(recommendation)
         }
         // Возвращаем список мест
-        onFinish(recomendations)
+        onFinish(recommendations)
     }
 
-    // Функция, которая обрабатывает json локации в RecomendationModel
-    private fun handleRecomendationJson(
+    // Функция, которая обрабатывает json локации в ShortRecommendationModel
+    private fun handleRecommendationJson(
         response: JSONObject
-    ): RecomendationModel {
+    ): ShortRecommendationModel {
         // Парсим все необходимое
         val id = response.getString("fsq_id")
         val title = response.getString("name")
@@ -101,7 +99,7 @@ class RecommendationsApi {
         val address = locationObj.getString("formatted_address")
 
         // Отдаем
-        return RecomendationModel(
+        return ShortRecommendationModel(
             id,
             title,
             image,

@@ -7,13 +7,14 @@ import com.android.volley.toolbox.Volley
 import com.example.prodfinal.domain.model.UserModel
 import org.json.JSONObject
 
+// Класс для получения данных о рандомном пользователе
+
 class RandomUserApi {
     // Функция,которая получает погоду и обрабатывает ее
     fun getRandomUser(
         context: Context,
         onFinish: (result: UserModel) -> Unit
     ) {
-
         // URL запроса
         val url = "https://randomuser.me/api/"
 
@@ -28,9 +29,7 @@ class RandomUserApi {
                 // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
-            {
-                // Обрабатываем ошибку(возвращаем "неудачный" ответ)
-            }
+            {}
         )
 
         // Добавляем запрос в очередь
@@ -44,7 +43,7 @@ class RandomUserApi {
 
         val loginInfo = json.getJSONObject("login")
         val password = loginInfo.getString("password")
-        val name = loginInfo.getString("username")
+        val username = loginInfo.getString("username")
 
         val mail = json.getString("email")
         val phoneNum = json.getString("phone")
@@ -54,15 +53,19 @@ class RandomUserApi {
 
         val location = json.getJSONObject("location")
         val street = location.getJSONObject("street")
-        val adress = "" + street.get("name") + " " + street.get("number")
+        val address = "" + street.get("name") + " " + street.get("number")
+
+        val photoObj = json.getJSONObject("picture")
+        val photo = photoObj.getString("medium")
 
         // Отдаем
         onFinish(
             UserModel(
-                name,
+                username,
+                photo,
                 mail,
                 birthday,
-                adress,
+                address,
                 phoneNum,
                 password
             )

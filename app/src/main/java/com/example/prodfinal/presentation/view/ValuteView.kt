@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import com.example.prodfinal.R
 import com.example.prodfinal.data.repository.ValuteRepositoryImpl
 import com.example.prodfinal.domain.model.ValuteExchangeModel
-import com.example.prodfinal.domain.state.LoadingState
 import com.example.prodfinal.domain.state.ValuteRate
 import java.math.BigDecimal
 
