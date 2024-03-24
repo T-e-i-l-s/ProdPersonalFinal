@@ -20,10 +20,10 @@ class ValuteMapper {
 
         return ValuteExchangeModel(
             valute.currentUsd.setScale(2, RoundingMode.HALF_EVEN),
-            valute.currentUsd.setScale(2, RoundingMode.HALF_EVEN),
+            valute.prevUsd.setScale(2, RoundingMode.HALF_EVEN),
             usdRate,
             valute.currentEur.setScale(2, RoundingMode.HALF_EVEN),
-            valute.currentEur.setScale(2, RoundingMode.HALF_EVEN),
+            valute.prevEur.setScale(2, RoundingMode.HALF_EVEN),
             eurRate
         )
     }
