@@ -14,19 +14,19 @@ class BudgetSource {
         context: Context,
         index: Int,
         sum: String
-    ): BigDecimal {
+    ): ArrayList<BudgetGoalModel> {
         // Получаем список целей
         val goals = getGoals(context)
         // Отсекаем случай с неверным index
         if (index >= goals.size) {
-            return BigDecimal(0)
+            return goals
         }
 
         // Цель, к которой нужно прибавить
         val goal = goals[index]
 
         // Число, которое нужно прибавить
-        val numValue = sum.toBigDecimalOrNull() ?: return goal.received
+        val numValue = sum.toBigDecimalOrNull() ?: return goals
 
         // Сохраняем изменения
         goals[index] = BudgetGoalModel(
@@ -47,7 +47,7 @@ class BudgetSource {
         saveGoals(context, goals)
 
         // Возвращаем обновленную сумму полученных/потраченных средств
-        return goals[index].received
+        return goals
     }
 
     // Функция, которая удаляет цель

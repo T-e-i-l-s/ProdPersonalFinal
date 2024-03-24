@@ -126,7 +126,7 @@ fun CreateGoalScreen(context: Context, navController: NavController) {
                         context,
                         BudgetGoalModel(
                             name.value,
-                            goal.value.toBigDecimalOrNull() ?: BigDecimal(0),
+                            goal.value.toBigDecimalOrNull()?:BigDecimal(0),
                             BigDecimal(0)
                         )
                     )

@@ -1,6 +1,5 @@
 package com.example.prodfinal.presentation.view
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,6 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -30,26 +32,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.prodfinal.R
-import com.example.prodfinal.data.source.BudgetSource
 import com.example.prodfinal.domain.model.BudgetGoalModel
 
 @Composable
 fun BudgetGoalView(
-    context: Context,
     item: BudgetGoalModel,
-    index: Int,
     delete: () -> Unit,
+    addToReceived: (value: String) -> Unit,
+    focusRequester: FocusRequester
 ) {
-    val goalInfo = remember {
-        mutableStateOf(item)
-    }
-
     val textFieldValue = remember {
         mutableStateOf("")
-    }
-
-    val received = remember {
-        mutableStateOf(item.received)
     }
 
     Column(
@@ -71,7 +64,7 @@ fun BudgetGoalView(
                 .padding(0.dp, 0.dp, 0.dp, 3.dp)
         )
         LinearProgressIndicator(
-            progress = received.value.toFloat() / goalInfo.value.goal.toFloat(),
+            progress = item.received.toFloat() / item.goal.toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(10.dp)
@@ -90,7 +83,7 @@ fun BudgetGoalView(
                 .fillMaxWidth()
         ) {
             Text(
-                text = received.value.toString(),
+                text = item.received.toString(),
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
@@ -98,7 +91,7 @@ fun BudgetGoalView(
                 textAlign = TextAlign.Left
             )
             Text(
-                text = goalInfo.value.goal.toString(),
+                text = item.goal.toString(),
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
@@ -113,7 +106,7 @@ fun BudgetGoalView(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (goalInfo.value.goal != received.value) {
+            if (item.goal != item.received) {
                 BasicTextField(
                     value = textFieldValue.value,
                     modifier = Modifier
@@ -121,7 +114,8 @@ fun BudgetGoalView(
                             color = colorResource(id = R.color.light_main),
                             shape = RoundedCornerShape(5.dp)
                         )
-                        .weight(1f),
+                        .weight(1f)
+                        .focusRequester(focusRequester),
                     textStyle = TextStyle(fontSize = 16.sp),
                     onValueChange = {
                         textFieldValue.value = it
@@ -156,8 +150,7 @@ fun BudgetGoalView(
                         )
                         .padding(vertical = 5.dp, horizontal = 15.dp)
                         .clickable {
-                            received.value =
-                                BudgetSource().addToReceived(context, index, textFieldValue.value)
+                            addToReceived(textFieldValue.value)
                             textFieldValue.value = ""
                         },
                     color = colorResource(id = R.color.background),

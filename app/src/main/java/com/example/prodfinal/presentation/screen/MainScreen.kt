@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -37,6 +36,8 @@ import com.example.prodfinal.presentation.view.RecomendationView
 import com.example.prodfinal.presentation.view.SceletonView
 import com.example.prodfinal.presentation.view.WeatherView
 
+// Загружены ли данные
+private var isDataLoaded = false
 
 // Статус виджета погоды(загружается, нет доступа, загружен)
 private val loadingStatus = mutableStateOf(LoadingState.LOADING)
@@ -60,7 +61,8 @@ private var recomendations = mutableListOf<ShortRecommendationModel>()
 
 @Composable
 fun MainScreen(context: Context, stackNavigator: NavController) {
-    LaunchedEffect(true) {
+    if (!isDataLoaded) {
+        isDataLoaded = true
         // Проверяем подключен ли интернет
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

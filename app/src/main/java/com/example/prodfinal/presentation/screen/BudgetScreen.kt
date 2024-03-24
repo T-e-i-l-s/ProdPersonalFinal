@@ -19,6 +19,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -37,6 +40,10 @@ private val goals = mutableStateOf(listOf<BudgetGoalModel>())
 
 @Composable
 fun BudgetScreen(context: Context, navController: NavController) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
     LaunchedEffect(true) {
         goals.value = BudgetSource().getGoals(context)
     }
@@ -76,10 +83,16 @@ fun BudgetScreen(context: Context, navController: NavController) {
                 Box(
                     modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
                 ) {
-                    BudgetGoalView(context, item, index
-                    ) {
+                    BudgetGoalView(item,
+                    {
                         goals.value = BudgetSource().deleteGoal(context, index)
-                    }
+                    },
+                    { value ->
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                        goals.value = BudgetSource().addToReceived(context, index, value)
+                    },
+                    focusRequester)
                 }
             }
         }

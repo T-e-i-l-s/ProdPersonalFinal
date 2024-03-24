@@ -5,5 +5,5 @@ import java.math.BigDecimal
 data class BudgetGoalModel(
     val name: String,
     val goal: BigDecimal,
-    var received: BigDecimal
+    val received: BigDecimal
 )
