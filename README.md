@@ -42,3 +42,7 @@ LifestyleHUB – это приложение для формирования с�
   * Gson
   * Volley
   * Coil
+
+## Ссылки
+  * [Документация](https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/wiki/Documentation)
+  * [Обоснование принятых решений](https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/wiki/RFC)
