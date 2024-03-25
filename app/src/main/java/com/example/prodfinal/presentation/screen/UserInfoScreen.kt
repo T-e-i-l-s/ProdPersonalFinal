@@ -53,7 +53,7 @@ fun UserInfoScreen(context: Context, stackNavigator: NavController) {
         if (isRegistered.value) {
             Registered(context)
         } else {
-            NotRegistered(context, stackNavigator)
+            NotRegistered(stackNavigator)
         }
     }
 }
@@ -121,7 +121,7 @@ fun Registered(context: Context) {
 
 // Экран с предложением авторизоваться
 @Composable
-fun NotRegistered(context: Context, stackNavigator: NavController) {
+fun NotRegistered(stackNavigator: NavController) {
     Text(
         text = "Добро пожаловать в LifestyleHUB!",
         color = colorResource(id = R.color.text),
@@ -155,22 +155,6 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
     ) {
         Text(
             text = "Войти",
-            color = colorResource(id = R.color.text),
-            fontSize = 16.sp,
-            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-        )
-    }
-
-    Button(
-        modifier = Modifier.padding(top = 10.dp),
-        onClick = {
-            val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
-            sharedPref.edit().remove("users").remove("current_user").remove("is_registered").apply()
-        },
-        colors = getWhiteButtonColors(),
-    ) {
-        Text(
-            text = "Сбросить все аккаунты",
             color = colorResource(id = R.color.text),
             fontSize = 16.sp,
             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
