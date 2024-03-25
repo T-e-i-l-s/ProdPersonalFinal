@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.example.prodfinal.R
 
-// Единый стиль для TextField
+// Единый стиль для темных кнопок
 
 @Composable
 fun getBlackButtonColors() : ButtonColors =

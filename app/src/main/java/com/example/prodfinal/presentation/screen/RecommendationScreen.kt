@@ -41,11 +41,11 @@ import com.example.prodfinal.domain.model.FullRecommendationModel
 import com.example.prodfinal.domain.state.LoadingState
 import com.example.prodfinal.navigation.stackCurrentRoute
 import com.example.prodfinal.presentation.style.getBlackButtonColors
-import com.example.prodfinal.presentation.view.ImageSkeletonView
 import com.example.prodfinal.presentation.view.NoPhotoView
+import com.example.prodfinal.presentation.view.SceletonView
 
 @Composable
-fun RecomendationScreen(context: Context, navController: NavController) {
+fun RecommendationScreen(context: Context, navController: NavController) {
     // Статус загрузки данных
     val loadingStatus = remember {
         mutableStateOf(LoadingState.LOADING)
@@ -108,7 +108,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
 
         // Основное изображение
         if (loadingStatus.value == LoadingState.LOADING) {
-            ImageSkeletonView(
+            SceletonView(
                 Modifier
                     .fillMaxWidth()
                     .height(200.dp)
@@ -151,7 +151,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
         if (loadingStatus.value == LoadingState.LOADING) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 for (i in 0..2) {
-                    ImageSkeletonView(
+                    SceletonView(
                         Modifier
                             .width(156.dp)
                             .height(96.dp)

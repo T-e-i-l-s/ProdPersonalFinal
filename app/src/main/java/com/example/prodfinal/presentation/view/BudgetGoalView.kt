@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.BudgetGoalModel
 
+// Вью цели для экрана "Бюджет"
+
 @Composable
 fun BudgetGoalView(
     item: BudgetGoalModel,

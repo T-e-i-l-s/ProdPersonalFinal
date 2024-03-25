@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -33,6 +34,8 @@ import java.math.BigDecimal
 
 // Были ли загружены данные
 private val isDataLoaded = mutableStateOf(false)
+
+// Виджет курса валют
 
 @Composable
 fun ValuteView(context: Context) {
@@ -51,8 +54,8 @@ fun ValuteView(context: Context) {
 
     LaunchedEffect(!isDataLoaded.value) {
         ValuteRepositoryImpl().getValuteExchange(context) { response ->
-            isDataLoaded.value = true
             valuteData.value = response
+            isDataLoaded.value = true
         }
     }
 
@@ -138,6 +141,7 @@ fun ValuteView(context: Context) {
                 Modifier
                     .fillMaxWidth()
                     .height(100.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
         }
     }

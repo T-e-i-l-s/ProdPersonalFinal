@@ -11,7 +11,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.presentation.screen.AuthorisationScreen
 import com.example.prodfinal.presentation.screen.CreateGoalScreen
 import com.example.prodfinal.presentation.screen.CreateToDoScreen
-import com.example.prodfinal.presentation.screen.RecomendationScreen
+import com.example.prodfinal.presentation.screen.RecommendationScreen
 
 var stackCurrentRoute = mutableStateOf("main_component") // Открытый экран в графе stack навигации
 
@@ -47,7 +47,7 @@ fun StackNavigator () {
         ) {
             stackCurrentRoute.value = "recommendation_screen"
             ChangeStatusBarColor(colorResource(id = R.color.background))
-            RecomendationScreen(LocalContext.current, navController)
+            RecommendationScreen(LocalContext.current, navController)
         }
 
         // Экран создания новой задачи в "Мой досуг"

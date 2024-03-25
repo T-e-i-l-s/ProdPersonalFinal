@@ -5,10 +5,10 @@ import com.example.prodfinal.domain.model.FullRecommendationModel
 import com.google.gson.Gson
 import org.json.JSONObject
 
-// Класс работы с информацией о рекомендациях пользователем
+// Класс работы с информацией о рекомендациях
 
 class RecomendationSource {
-    // Функция, которая проверяет, сохранены ли данные о локации в SharedPreferences
+    // Функция, которая проверяет, сохранены ли данные о месте в SharedPreferences
     fun isSaved(
         context: Context,
         id: String
@@ -17,7 +17,7 @@ class RecomendationSource {
         return sharedPref.contains(id)
     }
 
-    // Функция, которая сохраняет данные о локации в SharedPreferences
+    // Функция, которая сохраняет данные о месте в SharedPreferences
     fun saveRecomendationData(
         context: Context,
         recomendation: FullRecommendationModel
@@ -33,7 +33,7 @@ class RecomendationSource {
             .apply()
     }
 
-    // Функция, которая получает данные о локации из SharedPreferences
+    // Функция, которая получает данные о месте из SharedPreferences
     fun getRecomendationData(
         context: Context,
         id: String

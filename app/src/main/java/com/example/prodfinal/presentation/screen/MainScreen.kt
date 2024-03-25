@@ -2,6 +2,8 @@ package com.example.prodfinal.presentation.screen
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
@@ -32,9 +35,10 @@ import com.example.prodfinal.data.repository.WeatherRepositoryImpl
 import com.example.prodfinal.domain.model.ShortRecommendationModel
 import com.example.prodfinal.domain.model.WeatherModel
 import com.example.prodfinal.domain.state.LoadingState
-import com.example.prodfinal.presentation.view.RecomendationView
+import com.example.prodfinal.presentation.view.RecommendationView
 import com.example.prodfinal.presentation.view.SceletonView
 import com.example.prodfinal.presentation.view.WeatherView
+
 
 // Загружены ли данные
 private var isDataLoaded = false
@@ -44,30 +48,33 @@ private val loadingStatus = mutableStateOf(LoadingState.LOADING)
 
 // Погода
 private val weatherInfo = mutableStateOf(
-    WeatherModel(
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-    )
+    WeatherModel("", "", "", "", "", "", "")
 )
 
 // Список рекомендаций(места рядом)
 private var recomendations = mutableListOf<ShortRecommendationModel>()
+
+// Функция, которая проверяет наличае подключения к интернету
+fun checkNetwork(context: Context): Boolean {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    var isConnected = false
+    val network: Network? = cm.activeNetwork
+    if (network != null) {
+        val capabilities: NetworkCapabilities? = cm.getNetworkCapabilities(network)
+        if (capabilities != null) {
+            isConnected = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+        }
+    }
+    return isConnected
+}
 
 @Composable
 fun MainScreen(context: Context, stackNavigator: NavController) {
     if (!isDataLoaded) {
         isDataLoaded = true
         // Проверяем подключен ли интернет
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork
-        val networkInfo = connectivityManager.getNetworkInfo(activeNetwork)
-        val isConnected = networkInfo != null && networkInfo.isConnected
+        val isConnected = checkNetwork(context)
         if (isConnected) { // Интернет подключен
             // Получаем данные о геолокации
             Location(context).getLocation { locationResponse ->
@@ -137,12 +144,13 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
             )
 
             if (loadingStatus.value == LoadingState.LOADING) {
-                for(i in 0..2) {
+                for (i in 0..2) {
                     SceletonView(
                         Modifier
                             .fillMaxWidth()
                             .height(150.dp)
                             .padding(bottom = 10.dp)
+                            .clip(RoundedCornerShape(16.dp))
                     )
                 }
             } else if (recomendations.isEmpty() || loadingStatus.value == LoadingState.ERROR) {
@@ -166,7 +174,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                                     spotColor = colorResource(id = R.color.shadow)
                                 ),
                         ) {
-                            RecomendationView(recomendation = item, stackNavigator)
+                            RecommendationView(recommendation = item, stackNavigator)
                         }
                     }
                 }

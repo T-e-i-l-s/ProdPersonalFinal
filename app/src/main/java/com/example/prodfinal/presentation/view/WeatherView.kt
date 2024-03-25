@@ -131,7 +131,5 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                 )
             }
         }
-
     }
-
 }

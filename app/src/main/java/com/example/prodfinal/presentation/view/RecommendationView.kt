@@ -32,8 +32,8 @@ import com.example.prodfinal.domain.model.ShortRecommendationModel
 // Блок рекомендации для главного экрана
 
 @Composable
-fun RecomendationView(
-    recomendation: ShortRecommendationModel,
+fun RecommendationView(
+    recommendation: ShortRecommendationModel,
     navController: NavController
 ) {
     Column(
@@ -48,13 +48,13 @@ fun RecomendationView(
                 indication = null,
             ) {
                 navController.navigate(
-                    "recommendation_screen/${recomendation.id}"
+                    "recommendation_screen/${recommendation.id}"
                 )
             }
             .clipToBounds(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (recomendation.image == "") {
+        if (recommendation.image == "") {
             NoPhotoView(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,8 +63,8 @@ fun RecomendationView(
             )
         } else {
             AsyncImage(
-                model = recomendation.image,
-                contentDescription = recomendation.title,
+                model = recommendation.image,
+                contentDescription = recommendation.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(128.dp)
@@ -82,7 +82,7 @@ fun RecomendationView(
             Row {
                 Text(
                     modifier = Modifier.padding(end = 5.dp),
-                    text = recomendation.title,
+                    text = recommendation.title,
                     fontSize = 19.sp,
                     fontWeight = FontWeight(700),
                     color = colorResource(id = R.color.text),
@@ -90,14 +90,14 @@ fun RecomendationView(
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
 
-                if (recomendation.category.size > 0) {
+                if (recommendation.category.size > 0) {
                     Text(
                         modifier = Modifier
                             .background(
                                 Color.LightGray, shape = RoundedCornerShape(5.dp)
                             )
                             .padding(vertical = 2.dp, horizontal = 5.dp),
-                        text = recomendation.category[0],
+                        text = recommendation.category[0],
                         fontSize = 16.sp,
                         color = colorResource(id = R.color.text),
                         maxLines = 1,
@@ -106,9 +106,9 @@ fun RecomendationView(
                 }
             }
 
-            if (recomendation.address.isNotEmpty()) {
+            if (recommendation.address.isNotEmpty()) {
                 Text(
-                    text = recomendation.address,
+                    text = recommendation.address,
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.text),
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))

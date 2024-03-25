@@ -25,6 +25,8 @@ import coil.compose.AsyncImage
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.UserModel
 
+// Вью с аватаром и ником пользователя
+
 @Composable
 fun ProfileView(item: UserModel) {
     Row(

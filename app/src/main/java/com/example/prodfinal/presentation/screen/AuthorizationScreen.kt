@@ -101,7 +101,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
         mode.value = AuthState.valueOf(
             "" + navController.currentBackStackEntry?.arguments?.getString("mode")
         )
-        // В зависимости от режима авторизации подготавливаем поля
+        // В зависимости от режима авторизации подготавливаем инпуты
         if (mode.value == AuthState.SIGNIN) {
             // Делаем запрос на получение случайного пользователя
             RandomUserRepositoryImpl().getRandomUser(
@@ -130,7 +130,6 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             .background(colorResource(id = R.color.background))
             .padding(10.dp),
     ) {
-        // Кнопка "Назад"
         Image(
             painter = painterResource(id = R.drawable.arrow_left_icon),
             contentDescription = "Назад",
@@ -153,7 +152,6 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Текст над блоком инпутов
             Text(
                 text = when (mode.value) {
                     AuthState.LOGIN -> "Войти"
@@ -216,7 +214,7 @@ fun LogIn() {
             isCorrect.value = true
             loginUsername.value = it
         },
-        label = { Text(text = "Имя",fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        label = { Text(text = "Логин",fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
         colors = getTextFieldColors(),
         shape = RoundedCornerShape(16.dp)
     )
@@ -245,7 +243,7 @@ fun SignIn() {
             .fillMaxWidth(),
         value = signinUsername.value,
         onValueChange = { signinUsername.value = it },
-        label = { Text(text = "Имя", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        label = { Text(text = "Логин", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
         colors = getTextFieldColors(),
         shape = RoundedCornerShape(16.dp),
     )
@@ -284,7 +282,9 @@ fun SignIn() {
     )
 
     TextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
         value = signinPhone.value,
         onValueChange = { signinPhone.value = it },
         label = { Text(text = "Телефон", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
@@ -293,7 +293,9 @@ fun SignIn() {
     )
 
     TextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
         value = "*".repeat(signinPassword.value.length),
         onValueChange = { signinPassword.value = it },
         label = { Text(text = "Пароль", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },

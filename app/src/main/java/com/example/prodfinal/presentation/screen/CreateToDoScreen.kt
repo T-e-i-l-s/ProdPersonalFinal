@@ -165,7 +165,13 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight(700),
                 textAlign = TextAlign.Left,
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    isImportant.value = !isImportant.value
+                }
             )
         }
 

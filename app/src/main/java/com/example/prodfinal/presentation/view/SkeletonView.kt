@@ -19,7 +19,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.prodfinal.R
 
-// Скелетон рекомендации для главного экрана
+// Базовый скелетон
 
 @Composable
 fun SceletonView(modifier: Modifier) {
@@ -55,7 +55,7 @@ fun SceletonView(modifier: Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(brush, RoundedCornerShape(16.dp))
+                .background(brush)
         )
     }
 }

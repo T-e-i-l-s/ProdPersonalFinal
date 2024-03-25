@@ -9,7 +9,9 @@ import org.junit.Assert.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+// Тест маппера валюты
 class ValuteUnitTest {
+    // Круглое значение валюты + рост валюты
     @Test
     fun roundValuteRiseMapperTest() {
         val source = ValuteExchangeModel(
@@ -32,6 +34,7 @@ class ValuteUnitTest {
         assertEquals(expected, result)
     }
 
+    // Дробное значение валюты + рост валюты
     @Test
     fun fractionalValuteRiseMapperTest() {
         val source = ValuteExchangeModel(
@@ -54,6 +57,7 @@ class ValuteUnitTest {
         assertEquals(expected, result)
     }
 
+    // Круглое значение валюты + падение валюты
     @Test
     fun roundValuteFallMapperTest() {
         val source = ValuteExchangeModel(
@@ -76,6 +80,7 @@ class ValuteUnitTest {
         assertEquals(expected, result)
     }
 
+    // Дробное значение валюты + падение валюты
     @Test
     fun fractionalValuteFallMapperTest() {
         val source = ValuteExchangeModel(
@@ -98,6 +103,7 @@ class ValuteUnitTest {
         assertEquals(expected, result)
     }
 
+    // Круглое значение валюты + отсутствие изменений в цене валюты
     @Test
     fun roundValuteStableMapperTest() {
         val source = ValuteExchangeModel(
@@ -120,6 +126,7 @@ class ValuteUnitTest {
         assertEquals(expected, result)
     }
 
+    // Дробное значение валюты + отсутствие изменений в цене валюты
     @Test
     fun fractionalValuteStableMapperTest() {
         val source = ValuteExchangeModel(

@@ -6,7 +6,9 @@ import org.junit.Test
 
 import org.junit.Assert.*
 
+// Тест маппера погоды
 class WeatherUnitTest {
+    // Целое положительное значение температуры
     @Test
     fun defaultWeatherMapperTest() {
         val source = WeatherModel(
@@ -31,8 +33,9 @@ class WeatherUnitTest {
         assertEquals(expected, result)
     }
 
+    // Дробное значение температуры
     @Test
-    fun notRoundTempWeatherMapperTest() {
+    fun fractionalTempWeatherMapperTest() {
         val source = WeatherModel(
             "Москва",
             "Ясно",
@@ -55,6 +58,7 @@ class WeatherUnitTest {
         assertEquals(expected, result)
     }
 
+    // Отрицательное значение температуры
     @Test
     fun minusTempWeatherMapperTest() {
         val source = WeatherModel(
