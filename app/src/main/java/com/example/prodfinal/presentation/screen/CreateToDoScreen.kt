@@ -7,12 +7,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -20,12 +24,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -62,6 +69,11 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
     // Дедлайн задачи
     val toDoDate = remember {
         mutableStateOf("")
+    }
+
+    // Важная ли задача
+    val isImportant = remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(true) {
@@ -104,6 +116,32 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
             PlaceToDo(toDoName, toDoDate, "" + placeName.value)
         }
 
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 0.dp)
+        ) {
+            Checkbox(
+                checked = isImportant.value,
+                onCheckedChange = { isImportant.value = it },
+                colors = CheckboxDefaults.colors(
+                    colorResource(id = R.color.text),
+                    colorResource(id = R.color.text),
+                    colorResource(id = R.color.main),
+                    colorResource(id = R.color.text),
+                    colorResource(id = R.color.text),
+                    colorResource(id = R.color.main),
+                )
+            )
+            Text(
+                text = "Отметить как важное",
+                color = colorResource(id = R.color.text),
+                fontSize = 16.sp,
+                fontWeight = FontWeight(700),
+                textAlign = TextAlign.Left,
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        }
+
 
         Box(
             modifier = Modifier.padding(10.dp)
@@ -117,6 +155,7 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     if (mode.value == ToDoState.TEXT) {
                         result = ToDoItemModel(
                             ToDoState.TEXT,
+                            isImportant.value,
                             toDoName.value,
                             toDoDescription.value,
                             toDoDate.value,
@@ -126,6 +165,7 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
                     } else {
                         result = ToDoItemModel(
                             ToDoState.PLACE,
+                            isImportant.value,
                             toDoName.value,
                             "",
                             toDoDate.value,
@@ -236,7 +276,7 @@ fun TextToDo(
             shape = RoundedCornerShape(16.dp),
             label = {
                 Text(
-                    text = "Дата",
+                    text = "Выполнить до",
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             },
@@ -299,7 +339,7 @@ fun PlaceToDo(
             shape = RoundedCornerShape(16.dp),
             label = {
                 Text(
-                    text = "Дата",
+                    text = "Выполнить до",
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             },

@@ -1,7 +1,6 @@
 package com.example.prodfinal.data.source
 
 import android.content.Context
-import android.util.Log
 import com.example.prodfinal.domain.model.ToDoItemModel
 import com.example.prodfinal.domain.state.ToDoState
 import com.google.gson.Gson
@@ -101,9 +100,9 @@ class ToDoSource {
             // Парсим элемент массива
             val element = jsonArray.getJSONObject(i)
             // Переводим в ToDoItemModel
-            Log.e("TEST____", element.toString())
             val item = ToDoItemModel(
                 ToDoState.valueOf(element.getString("mode").uppercase()),
+                element.getBoolean("isImportant"),
                 element.getString("name"),
                 element.getString("description"),
                 element.getString("date"),

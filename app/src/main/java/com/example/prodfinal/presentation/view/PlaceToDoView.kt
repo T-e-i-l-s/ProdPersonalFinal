@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,6 +49,25 @@ fun PlaceToDoView(
         Column(
             modifier = Modifier.weight(1f)
         ) {
+            if (item.isImportant) {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.important_icon),
+                        contentDescription = "Локация"
+                    )
+                    // Локация
+                    Text(
+                        text = "Важно",
+                        color = colorResource(id = R.color.error),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(700),
+                        textAlign = TextAlign.Left,
+                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                    )
+                }
+            }
             Text(
                 text = item.name,
                 fontSize = 19.sp,
