@@ -50,7 +50,7 @@ fun StackNavigator () {
             RecomendationScreen(LocalContext.current, navController)
         }
 
-        // Экран создания нового элемента todo
+        // Экран создания новой задачи в "Мой досуг"
         composable(
             "create_todo_screen/{mode}/{place_id}/{place_name}"
         ) {

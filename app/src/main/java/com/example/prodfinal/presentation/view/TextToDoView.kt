@@ -46,14 +46,14 @@ fun TextToDoView(
             modifier = Modifier.weight(1f)
         ) {
             if (item.isImportant) {
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.important_icon),
                         contentDescription = "Локация"
                     )
-                    // Локация
+
                     Text(
                         text = "Важно",
                         color = colorResource(id = R.color.error),
@@ -64,6 +64,7 @@ fun TextToDoView(
                     )
                 }
             }
+
             Text(
                 text = item.name,
                 fontSize = 19.sp,
@@ -71,12 +72,14 @@ fun TextToDoView(
                 color = colorResource(id = R.color.text),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.description,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.text),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.date,
                 fontSize = 16.sp,
@@ -84,12 +87,13 @@ fun TextToDoView(
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
         }
+
         Image(
             painter = painterResource(id = R.drawable.delete_icon),
             contentDescription = "Удалить",
             modifier = Modifier
                 .padding(10.dp, 0.dp, 0.dp, 0.dp)
-                .clickable (
+                .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {

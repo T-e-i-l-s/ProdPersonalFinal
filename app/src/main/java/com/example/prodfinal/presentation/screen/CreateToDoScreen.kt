@@ -5,18 +5,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -31,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +36,8 @@ import com.example.prodfinal.data.source.ToDoSource
 import com.example.prodfinal.domain.model.ToDoItemModel
 import com.example.prodfinal.domain.state.ToDoState
 import com.example.prodfinal.navigation.stackCurrentRoute
+import com.example.prodfinal.presentation.style.getBlackButtonColors
+import com.example.prodfinal.presentation.style.getCheckBoxColors
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
 @Composable
@@ -76,18 +73,54 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(true) {
-        mode.value = ToDoState.valueOf(
-            navController.currentBackStackEntry
-                ?.arguments
-                ?.getString("mode").toString()
+    val createToDo = {
+        // Получаем ToDoItemModel из полученных данных
+        val result: ToDoItemModel
+        if (mode.value == ToDoState.TEXT) {
+            result = ToDoItemModel(
+                ToDoState.TEXT,
+                isImportant.value,
+                toDoName.value,
+                toDoDescription.value,
+                toDoDate.value,
+                "",
+                ""
+            )
+        } else {
+            result = ToDoItemModel(
+                ToDoState.PLACE,
+                isImportant.value,
+                toDoName.value,
+                "",
+                toDoDate.value,
+                "" + placeId.value,
+                "" + placeName.value
+            )
+        }
+
+        // Сохраняем данные
+        ToDoSource().addToDo(
+            context,
+            result
         )
-        placeId.value = navController.currentBackStackEntry
-            ?.arguments
-            ?.getString("place_id").toString()
-        placeName.value = navController.currentBackStackEntry
-            ?.arguments
-            ?.getString("place_name").toString()
+
+        // Сбрасываем все поля
+        toDoName.value = ""
+        toDoDescription.value = ""
+        toDoDate.value = ""
+
+        navController.navigate("main_component")
+    }
+
+    LaunchedEffect(true) {
+        // Получаем аргументы, переданные при навигации
+        mode.value = ToDoState.valueOf(
+            navController.currentBackStackEntry?.arguments?.getString("mode").toString()
+        )
+        placeId.value =
+            navController.currentBackStackEntry?.arguments?.getString("place_id").toString()
+        placeName.value =
+            navController.currentBackStackEntry?.arguments?.getString("place_name").toString()
     }
 
     Column(
@@ -123,15 +156,9 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
             Checkbox(
                 checked = isImportant.value,
                 onCheckedChange = { isImportant.value = it },
-                colors = CheckboxDefaults.colors(
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.main),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.main),
-                )
+                colors = getCheckBoxColors()
             )
+
             Text(
                 text = "Отметить как важное",
                 color = colorResource(id = R.color.text),
@@ -142,68 +169,21 @@ fun CreateToDoScreen(context: Context, navController: NavController) {
             )
         }
 
-
-        Box(
-            modifier = Modifier.padding(10.dp)
+        Button(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
+            onClick = { createToDo() },
+            colors = getBlackButtonColors(),
         ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    // Получаем ToDoItemModel из полученных данных
-                    val result: ToDoItemModel
-                    if (mode.value == ToDoState.TEXT) {
-                        result = ToDoItemModel(
-                            ToDoState.TEXT,
-                            isImportant.value,
-                            toDoName.value,
-                            toDoDescription.value,
-                            toDoDate.value,
-                            "",
-                            ""
-                        )
-                    } else {
-                        result = ToDoItemModel(
-                            ToDoState.PLACE,
-                            isImportant.value,
-                            toDoName.value,
-                            "",
-                            toDoDate.value,
-                            "" + placeId.value,
-                            "" + placeName.value
-                        )
-                    }
-
-                    // Сохраняем данные
-                    ToDoSource().addToDo(
-                        context,
-                        result
-                    )
-
-                    // Сбрасываем все поля
-                    toDoName.value = ""
-                    toDoDescription.value = ""
-                    toDoDate.value = ""
-
-                    navController.navigate("main_component")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                ),
-            ) {
-                Text(
-                    text = "Добавить",
-                    color = colorResource(id = R.color.background),
-                    fontWeight = FontWeight(700),
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(5.dp),
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            }
+            Text(
+                text = "Добавить",
+                color = colorResource(id = R.color.background),
+                fontWeight = FontWeight(700),
+                fontSize = 16.sp,
+                modifier = Modifier.padding(5.dp),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
         }
     }
 }
@@ -214,74 +194,53 @@ fun TextToDo(
     toDoDescription: MutableState<String>,
     toDoDate: MutableState<String>
 ) {
-    Box(
+    TextField(
         modifier = Modifier
-            .padding(10.dp, 10.dp, 10.dp, 0.dp)
-            .fillMaxWidth()
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = toDoName.value,
-            onValueChange = {
-                toDoName.value = it
-            },
-            label = {
-                Text(
-                    text = "Название",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        value = toDoName.value,
+        onValueChange = { toDoName.value = it },
+        label = {
+            Text(
+                text = "Название",
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Box(
+    TextField(
         modifier = Modifier
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
-            .fillMaxWidth()
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = toDoDescription.value,
-            onValueChange = {
-                toDoDescription.value = it
-            },
-            label = {
-                Text(
-                    text = "Описание",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .fillMaxWidth(),
+        value = toDoDescription.value,
+        onValueChange = { toDoDescription.value = it },
+        label = {
+            Text(
+                text = "Описание",
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Box(
+    TextField(
         modifier = Modifier
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
-            .fillMaxWidth()
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = toDoDate.value,
-            onValueChange = {
-                toDoDate.value = it
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-            label = {
-                Text(
-                    text = "Выполнить до",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-        )
-    }
+            .fillMaxWidth(),
+        value = toDoDate.value,
+        onValueChange = { toDoDate.value = it },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+        label = {
+            Text(
+                text = "Выполнить до",
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        },
+    )
 }
 
 @Composable
@@ -293,56 +252,42 @@ fun PlaceToDo(
     Text(
         text = "Место: $placeName",
         modifier = Modifier
-            .padding(10.dp, 0.dp, 10.dp, 0.dp),
+            .padding(horizontal = 10.dp),
         fontSize = 19.sp,
         fontWeight = FontWeight(700),
         color = colorResource(id = R.color.text),
         fontFamily = FontFamily(Font(R.font.wix_madefor_display))
     )
 
-    Box(
+    TextField(
         modifier = Modifier
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
-            .fillMaxWidth()
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = toDoName.value,
-            onValueChange = {
-                toDoName.value = it
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-            label = {
-                Text(
-                    text = "Название",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-        )
-    }
+            .fillMaxWidth(),
+        value = toDoName.value,
+        onValueChange = { toDoName.value = it },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+        label = {
+            Text(
+                text = "Название",
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        },
+    )
 
-    Box(
+    TextField(
         modifier = Modifier
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
-            .fillMaxWidth()
-    ) {
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            value = toDoDate.value,
-            onValueChange = {
-                toDoDate.value = it
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-            label = {
-                Text(
-                    text = "Выполнить до",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-        )
-    }
+            .fillMaxWidth(),
+        value = toDoDate.value,
+        onValueChange = { toDoDate.value = it },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+        label = {
+            Text(
+                text = "Выполнить до",
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+        },
+    )
 }

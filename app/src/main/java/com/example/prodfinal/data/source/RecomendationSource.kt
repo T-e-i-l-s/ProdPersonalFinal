@@ -49,7 +49,6 @@ class RecomendationSource {
 
     // Функция, которая переводит json строку в FullRecomendationModel
     private fun decodeRecomendationJson(recomendationString: String): FullRecommendationModel {
-        // Парсим необходимые поля
         val recomendationJson = JSONObject(recomendationString)
 
         val photosJson = recomendationJson.getJSONArray("photos")
@@ -69,7 +68,6 @@ class RecomendationSource {
             mail = recomendationJson.getString("mail")
         }
 
-        // Отдаем данные
         return FullRecommendationModel(
             recomendationJson.getString("id"),
             recomendationJson.getString("title"),

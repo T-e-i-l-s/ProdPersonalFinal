@@ -8,7 +8,7 @@ import java.math.RoundingMode
 
 class ValuteMapper {
     fun invoke(valute: ValuteExchangeModel): ValuteExchangeModel {
-        // Корректируем и дополняем необходимые данные, а затем возвращаем
+        // Расчитываем динамику валют(рост или падение)
         var usdRate = ValuteRate.FALL
         if (valute.currentUsd.compareTo(valute.prevUsd) == 1) {
             usdRate = ValuteRate.RISE

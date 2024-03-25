@@ -22,9 +22,10 @@ import com.example.prodfinal.R
 // Скелетон рекомендации для главного экрана
 
 @Composable
-fun SceletonView (modifier: Modifier) {
+fun SceletonView(modifier: Modifier) {
     val transition = rememberInfiniteTransition("")
 
+    // Анимация
     val translateAnimation = transition.animateFloat(
         initialValue = 0f,
         targetValue = 2500f,
@@ -39,6 +40,8 @@ fun SceletonView (modifier: Modifier) {
         colorResource(id = R.color.sceleton1),
         colorResource(id = R.color.sceleton2),
     )
+
+    // Градиент
     val brush = Brush.linearGradient(
         colors = shimmerColors,
         start = Offset(translateAnimation.value, translateAnimation.value),

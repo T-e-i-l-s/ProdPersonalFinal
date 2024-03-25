@@ -39,22 +39,21 @@ import com.example.prodfinal.presentation.view.WeatherView
 // Загружены ли данные
 private var isDataLoaded = false
 
-// Статус виджета погоды(загружается, нет доступа, загружен)
+// Статус загрузки данных(загружается, нет доступа, загружен)
 private val loadingStatus = mutableStateOf(LoadingState.LOADING)
 
 // Погода
-private val weatherInfo =
-    mutableStateOf(
-        WeatherModel(
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        )
+private val weatherInfo = mutableStateOf(
+    WeatherModel(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
     )
+)
 
 // Список рекомендаций(места рядом)
 private var recomendations = mutableListOf<ShortRecommendationModel>()
@@ -69,8 +68,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
         val activeNetwork = connectivityManager.activeNetwork
         val networkInfo = connectivityManager.getNetworkInfo(activeNetwork)
         val isConnected = networkInfo != null && networkInfo.isConnected
-
-        if (isConnected) {
+        if (isConnected) { // Интернет подключен
             // Получаем данные о геолокации
             Location(context).getLocation { locationResponse ->
                 if (!locationResponse.isEnabled) { // Если не удалось получить геолокацию
@@ -92,13 +90,13 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                         locationResponse.longtitude
                     ) { recommendationsResponse ->
                         recomendations = recommendationsResponse
-                        loadingStatus.value =
-                            LoadingState.READY // Меняем статус виджета на "загружен"
+                        // Меняем статус загрузки на "загружено"
+                        loadingStatus.value = LoadingState.READY
                     }
                 }
             }
         } else {
-            // Нет интернета
+            // Нет интернета => выдаем ошибку загрузки
             loadingStatus.value = LoadingState.ERROR
         }
     }
@@ -106,14 +104,9 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                colorResource(id = R.color.weather),
-            )
+            .background(colorResource(id = R.color.weather))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             WeatherView(
                 weatherItem = weatherInfo.value,
                 status = loadingStatus.value,
@@ -131,42 +124,28 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                         topStart = 24.dp
                     )
                 )
-                .padding(10.dp, 0.dp, 10.dp, 0.dp),
+                .padding(horizontal = 10.dp),
         ) {
-
             Text(
                 text = "Рекомендации",
                 color = colorResource(id = R.color.text),
                 fontSize = 25.sp,
                 fontWeight = FontWeight(600),
                 modifier = Modifier
-                    .padding(0.dp, 10.dp, 0.dp, 10.dp),
+                    .padding(vertical = 10.dp),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
 
             if (loadingStatus.value == LoadingState.LOADING) {
-                SceletonView(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
-                )
-                SceletonView(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
-                )
-                SceletonView(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .padding(0.dp, 0.dp, 0.dp, 10.dp)
-                )
-            } else if (
-                recomendations.isEmpty() ||
-                loadingStatus.value == LoadingState.ERROR
-            ) {
+                for(i in 0..2) {
+                    SceletonView(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .padding(bottom = 10.dp)
+                    )
+                }
+            } else if (recomendations.isEmpty() || loadingStatus.value == LoadingState.ERROR) {
                 Text(
                     text = "Мест рядом нет",
                     color = colorResource(id = R.color.text),
@@ -180,7 +159,7 @@ fun MainScreen(context: Context, stackNavigator: NavController) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(0.dp, 0.dp, 0.dp, 10.dp)
+                                .padding(bottom = 10.dp)
                                 .shadow(
                                     elevation = 5.dp,
                                     shape = RoundedCornerShape(16.dp),

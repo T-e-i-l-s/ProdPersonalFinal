@@ -7,7 +7,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.prodfinal.data.mapper.WeatherMapper
 import org.json.JSONObject
-import java.util.Locale
 
 // Класс для получения погоды на lat и lon
 
@@ -29,21 +28,17 @@ class WeatherApi {
                 "&lang=ru" +
                 "&units=metric"
 
-        // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
 
-        // Создаем запрос
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
             { response ->
-                // Обрабатываем его и отдаем виджету
                 handleResponse(response, onFinish)
             },
             {}
         )
 
-        // Добавляем запрос в очередь
         requestQueue.add(stringRequest)
     }
 
@@ -65,7 +60,6 @@ class WeatherApi {
 
         val city = json.getString("name")
 
-        // Отдаем погоду виджету
         onFinish(
             WeatherMapper().invoke(
                 WeatherModel(

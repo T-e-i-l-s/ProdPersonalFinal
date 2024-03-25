@@ -1,7 +1,6 @@
 package com.example.prodfinal.presentation.screen
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +31,7 @@ import com.example.prodfinal.R
 import com.example.prodfinal.data.source.CurrentUserSource
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
+import com.example.prodfinal.presentation.style.getWhiteButtonColors
 import com.example.prodfinal.presentation.view.ProfileView
 import com.example.prodfinal.presentation.view.UserInfoView
 
@@ -96,10 +95,11 @@ fun Registered(context: Context) {
                     .weight(1f),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Image(
                 painter = painterResource(id = R.drawable.logout_icon),
                 contentDescription = "Выйти из аккаунта",
-                modifier = Modifier.clickable (
+                modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                 ) {
@@ -109,11 +109,11 @@ fun Registered(context: Context) {
             )
         }
 
-        Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+        Box(modifier = Modifier.padding(top = 10.dp)) {
             ProfileView(userInfo.value)
         }
 
-        Box(modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp)) {
+        Box(modifier = Modifier.padding(top = 10.dp)) {
             UserInfoView(userInfo.value)
         }
     }
@@ -131,76 +131,49 @@ fun NotRegistered(context: Context, stackNavigator: NavController) {
         fontFamily = FontFamily(Font(R.font.wix_madefor_display))
     )
 
-    Column(
-        modifier = Modifier
-            .padding(5.dp)
+    Button(
+        modifier = Modifier.padding(top = 10.dp),
+        onClick = {
+            stackNavigator.navigate("authorization_screen/${AuthState.SIGNIN}")
+        },
+        colors = getWhiteButtonColors(),
     ) {
-        Button(
-            onClick = {
-                stackNavigator.navigate("authorization_screen/${AuthState.SIGNIN}")
-            },
-            colors = ButtonDefaults.buttonColors(
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.selected),
-                colorResource(id = R.color.selected),
-            ),
-        ) {
-            Text(
-                text = "Создать аккаунт",
-                color = colorResource(id = R.color.text),
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-            )
-        }
+        Text(
+            text = "Создать аккаунт",
+            color = colorResource(id = R.color.text),
+            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+        )
     }
 
-    Column(
-        modifier = Modifier
-            .padding(5.dp)
+    Button(
+        modifier = Modifier.padding(top = 10.dp),
+        onClick = {
+            stackNavigator.navigate("authorization_screen/${AuthState.LOGIN}")
+        },
+        colors = getWhiteButtonColors(),
     ) {
-        Button(
-            onClick = {
-                stackNavigator.navigate("authorization_screen/${AuthState.LOGIN}")
-            },
-            colors = ButtonDefaults.buttonColors(
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.selected),
-                colorResource(id = R.color.selected),
-            ),
-        ) {
-            Text(
-                text = "Войти",
-                color = colorResource(id = R.color.text),
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-            )
-        }
+        Text(
+            text = "Войти",
+            color = colorResource(id = R.color.text),
+            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+        )
     }
 
-    Column(
-        modifier = Modifier
-            .padding(5.dp)
+    Button(
+        modifier = Modifier.padding(top = 10.dp),
+        onClick = {
+            val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
+            sharedPref.edit().remove("users").remove("current_user").remove("is_registered").apply()
+        },
+        colors = getWhiteButtonColors(),
     ) {
-        Button(
-            onClick = {
-                val sharedPref = context.getSharedPreferences("LifestyleHUB",Context.MODE_PRIVATE)
-                sharedPref.edit().remove("users").remove("current_user").remove("is_registered").apply()
-            },
-            colors = ButtonDefaults.buttonColors(
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.main),
-                colorResource(id = R.color.selected),
-                colorResource(id = R.color.selected),
-            ),
-        ) {
-            Text(
-                text = "Сбросить все аккаунты",
-                color = colorResource(id = R.color.text),
-                fontSize = 16.sp,
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-            )
-        }
+        Text(
+            text = "Сбросить все аккаунты",
+            color = colorResource(id = R.color.text),
+            fontSize = 16.sp,
+            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+        )
     }
 }

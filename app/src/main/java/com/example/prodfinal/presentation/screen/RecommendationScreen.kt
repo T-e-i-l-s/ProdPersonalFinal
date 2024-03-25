@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,20 +40,20 @@ import com.example.prodfinal.data.source.RecomendationSource
 import com.example.prodfinal.domain.model.FullRecommendationModel
 import com.example.prodfinal.domain.state.LoadingState
 import com.example.prodfinal.navigation.stackCurrentRoute
+import com.example.prodfinal.presentation.style.getBlackButtonColors
 import com.example.prodfinal.presentation.view.ImageSkeletonView
 import com.example.prodfinal.presentation.view.NoPhotoView
 
 @Composable
 fun RecomendationScreen(context: Context, navController: NavController) {
+    // Статус загрузки данных
     val loadingStatus = remember {
         mutableStateOf(LoadingState.LOADING)
     }
-
     // fsq_id выбранной рекомендации
     val fsqId = remember {
         mutableStateOf("")
     }
-
     // Информация о рекомендации
     val placeInfo = remember {
         mutableStateOf(
@@ -107,18 +105,18 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     }
                 }
         )
+
+        // Основное изображение
         if (loadingStatus.value == LoadingState.LOADING) {
-            Box(
-                modifier = Modifier
+            ImageSkeletonView(
+                Modifier
                     .fillMaxWidth()
                     .height(200.dp)
                     .border(
                         width = 3.dp,
                         color = colorResource(id = R.color.background)
-                    ),
-            ) {
-                ImageSkeletonView()
-            }
+                    )
+            )
         } else if (placeInfo.value.photos.size > 0) {
             AsyncImage(
                 model =
@@ -148,42 +146,20 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     ),
             )
         }
+
+        // Все фотографии
         if (loadingStatus.value == LoadingState.LOADING) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .width(156.dp)
-                        .height(96.dp)
-                        .border(
-                            width = 3.dp,
-                            color = colorResource(id = R.color.background)
-                        ),
-                ) {
-                    ImageSkeletonView()
-                }
-                Box(
-                    modifier = Modifier
-                        .width(156.dp)
-                        .height(96.dp)
-                        .border(
-                            width = 3.dp,
-                            color = colorResource(id = R.color.background)
-                        ),
-                ) {
-                    ImageSkeletonView()
-                }
-                Box(
-                    modifier = Modifier
-                        .width(156.dp)
-                        .height(96.dp)
-                        .border(
-                            width = 3.dp,
-                            color = colorResource(id = R.color.background)
-                        ),
-                ) {
-                    ImageSkeletonView()
+            Row(modifier = Modifier.fillMaxWidth()) {
+                for (i in 0..2) {
+                    ImageSkeletonView(
+                        Modifier
+                            .width(156.dp)
+                            .height(96.dp)
+                            .border(
+                                width = 3.dp,
+                                color = colorResource(id = R.color.background)
+                            )
+                    )
                 }
             }
         } else if (placeInfo.value.photos.size > 1) {
@@ -204,46 +180,33 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                 }
             }
         }
+
+        // Инфа о локации
         if (loadingStatus.value == LoadingState.READY) {
             Text(
                 text = placeInfo.value.title,
                 fontSize = 25.sp,
                 fontWeight = FontWeight(700),
                 color = colorResource(id = R.color.text),
-                modifier = Modifier
-                    .padding(
-                        10.dp,
-                        10.dp,
-                        0.dp,
-                        0.dp
-                    ),
+                modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 0.dp),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
 
-            LazyRow {
+            LazyRow (
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
                 items(placeInfo.value.category) {
-                    Box(
+                    Text(
                         modifier = Modifier
-                            .padding(
-                                10.dp,
-                                10.dp,
-                                0.dp,
-                                0.dp
-                            )
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .background(
-                                    Color.LightGray, shape = RoundedCornerShape(5.dp)
-                                )
-                                .padding(vertical = 2.dp, horizontal = 5.dp),
-                            text = it,
-                            fontSize = 16.sp,
-                            color = colorResource(id = R.color.text),
-                            maxLines = 1,
-                            fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                        )
-                    }
+                            .padding(start = 10.dp)
+                            .background(Color.LightGray, shape = RoundedCornerShape(5.dp))
+                            .padding(vertical = 2.dp, horizontal = 5.dp),
+                        text = it,
+                        fontSize = 16.sp,
+                        color = colorResource(id = R.color.text),
+                        maxLines = 1,
+                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                    )
                 }
             }
 
@@ -252,13 +215,7 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     text = "Адрес: " + placeInfo.value.address,
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.text),
-                    modifier = Modifier
-                        .padding(
-                            10.dp,
-                            10.dp,
-                            10.dp,
-                            0.dp
-                        ),
+                    modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 0.dp),
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
@@ -269,45 +226,30 @@ fun RecomendationScreen(context: Context, navController: NavController) {
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.text),
                     modifier = Modifier
-                        .padding(
-                            10.dp,
-                            10.dp,
-                            10.dp,
-                            0.dp
-                        ),
+                        .padding(10.dp, 10.dp, 10.dp, 0.dp),
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
 
-
-            Column(
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {
-                        navController.navigate(
-                            "create_todo_screen/PLACE/${placeInfo.value.id}/${placeInfo.value.title}"
-                        )
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                    ),
-                ) {
-                    Text(
-                        text = "Добавить в \"Мой досуг\"",
-                        color = colorResource(id = R.color.background),
-                        fontWeight = FontWeight(700),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .padding(5.dp),
-                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            Button(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
+                onClick = {
+                    navController.navigate(
+                        "create_todo_screen/PLACE/${placeInfo.value.id}/${placeInfo.value.title}"
                     )
-                }
+                },
+                colors = getBlackButtonColors(),
+            ) {
+                Text(
+                    text = "Добавить в \"Мой досуг\"",
+                    color = colorResource(id = R.color.background),
+                    fontWeight = FontWeight(700),
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(5.dp),
+                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+                )
             }
         }
     }

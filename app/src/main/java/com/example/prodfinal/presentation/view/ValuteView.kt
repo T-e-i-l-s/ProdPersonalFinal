@@ -56,7 +56,7 @@ fun ValuteView(context: Context) {
         }
     }
 
-    Box (
+    Box(
         modifier = Modifier
             .padding(0.dp, 10.dp, 0.dp, 10.dp)
     ) {
@@ -77,21 +77,21 @@ fun ValuteView(context: Context) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = when(valuteData.value.usdRate) {
+                        painter = when (valuteData.value.usdRate) {
                             ValuteRate.FALL -> painterResource(id = R.drawable.down_arrow_icon)
                             ValuteRate.RISE -> painterResource(id = R.drawable.up_arrow_icon)
                         },
                         contentDescription = "Направление курса"
                     )
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "USD",
                             color = colorResource(id = R.color.text),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
+
                         Text(
                             text = valuteData.value.currentUsd.toString() + "₽",
                             color = colorResource(id = R.color.text),
@@ -101,20 +101,20 @@ fun ValuteView(context: Context) {
                         )
                     }
                 }
+
                 Row(
                     Modifier.weight(1f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "EUR",
                             color = colorResource(id = R.color.text),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
+
                         Text(
                             text = valuteData.value.currentEur.toString() + "₽",
                             color = colorResource(id = R.color.text),
@@ -123,8 +123,9 @@ fun ValuteView(context: Context) {
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
                     }
+
                     Image(
-                        painter = when(valuteData.value.eurRate) {
+                        painter = when (valuteData.value.eurRate) {
                             ValuteRate.FALL -> painterResource(id = R.drawable.down_arrow_icon)
                             ValuteRate.RISE -> painterResource(id = R.drawable.up_arrow_icon)
                         },

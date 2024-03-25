@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -41,7 +40,7 @@ fun BudgetGoalView(
     addToReceived: (value: String) -> Unit,
     focusRequester: FocusRequester
 ) {
-    val textFieldValue = remember {
+    val goalValue = remember {
         mutableStateOf("")
     }
 
@@ -60,9 +59,9 @@ fun BudgetGoalView(
             fontWeight = FontWeight(700),
             color = colorResource(id = R.color.text),
             fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
-            modifier = Modifier
-                .padding(0.dp, 0.dp, 0.dp, 3.dp)
+            modifier = Modifier.padding(bottom = 3.dp)
         )
+
         LinearProgressIndicator(
             progress = item.received.toFloat() / item.goal.toFloat(),
             modifier = Modifier
@@ -79,7 +78,7 @@ fun BudgetGoalView(
 
         Row(
             modifier = Modifier
-                .padding(0.dp, 3.dp, 0.dp, 0.dp)
+                .padding(top = 3.dp)
                 .fillMaxWidth()
         ) {
             Text(
@@ -90,6 +89,7 @@ fun BudgetGoalView(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Left
             )
+
             Text(
                 text = item.goal.toString(),
                 fontSize = 16.sp,
@@ -108,7 +108,7 @@ fun BudgetGoalView(
         ) {
             if (item.goal != item.received) {
                 BasicTextField(
-                    value = textFieldValue.value,
+                    value = goalValue.value,
                     modifier = Modifier
                         .background(
                             color = colorResource(id = R.color.light_main),
@@ -117,19 +117,16 @@ fun BudgetGoalView(
                         .weight(1f)
                         .focusRequester(focusRequester),
                     textStyle = TextStyle(fontSize = 16.sp),
-                    onValueChange = {
-                        textFieldValue.value = it
-                    },
+                    onValueChange = { goalValue.value = it },
                     decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier.padding(5.dp)
-                        ) {
+                        Box(modifier = Modifier.padding(5.dp)) {
                             innerTextField()
                         }
                     },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
+
                 Text(
                     text = "руб",
                     fontSize = 16.sp,
@@ -139,6 +136,7 @@ fun BudgetGoalView(
                     modifier = Modifier
                         .padding(3.dp, 0.dp, 10.dp, 0.dp)
                 )
+
                 Text(
                     text = "Добавить",
                     fontSize = 16.sp,
@@ -150,8 +148,8 @@ fun BudgetGoalView(
                         )
                         .padding(vertical = 5.dp, horizontal = 15.dp)
                         .clickable {
-                            addToReceived(textFieldValue.value)
-                            textFieldValue.value = ""
+                            addToReceived(goalValue.value)
+                            goalValue.value = ""
                         },
                     color = colorResource(id = R.color.background),
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
@@ -166,6 +164,7 @@ fun BudgetGoalView(
                         .weight(1f)
                 )
             }
+
             Box(modifier = Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)) {
                 Text(
                     text = "Удалить",
@@ -177,9 +176,7 @@ fun BudgetGoalView(
                             shape = RoundedCornerShape(16.dp)
                         )
                         .padding(vertical = 5.dp, horizontal = 15.dp)
-                        .clickable {
-                            delete()
-                        },
+                        .clickable { delete() },
                     color = colorResource(id = R.color.background),
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )

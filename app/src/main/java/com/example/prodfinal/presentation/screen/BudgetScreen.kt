@@ -54,17 +54,16 @@ fun BudgetScreen(context: Context, navController: NavController) {
             .padding(10.dp, 10.dp, 10.dp, 0.dp)
             .fillMaxSize()
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Text(
+                modifier = Modifier.weight(1f),
                 text = "Бюджет",
                 color = colorResource(id = R.color.text),
                 fontSize = 22.sp,
                 fontWeight = FontWeight(700),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
-                modifier = Modifier.weight(1f)
             )
+
             Image(
                 painter = painterResource(id = R.drawable.plus_icon),
                 contentDescription = "Добавить",
@@ -77,22 +76,24 @@ fun BudgetScreen(context: Context, navController: NavController) {
                     }
             )
         }
+
         ValuteView(context = context)
+
         LazyColumn {
             itemsIndexed(goals.value) { index, item ->
-                Box(
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
-                ) {
-                    BudgetGoalView(item,
-                    {
-                        goals.value = BudgetSource().deleteGoal(context, index)
-                    },
-                    { value ->
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                        goals.value = BudgetSource().addToReceived(context, index, value)
-                    },
-                    focusRequester)
+                Box(modifier = Modifier.padding(bottom = 10.dp)) {
+                    BudgetGoalView(
+                        item,
+                        {
+                            goals.value = BudgetSource().deleteGoal(context, index)
+                        },
+                        { value ->
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                            goals.value = BudgetSource().addToReceived(context, index, value)
+                        },
+                        focusRequester
+                    )
                 }
             }
         }

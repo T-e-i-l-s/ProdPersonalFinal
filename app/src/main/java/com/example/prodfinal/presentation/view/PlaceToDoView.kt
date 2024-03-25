@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.ToDoItemModel
+import com.example.prodfinal.presentation.style.getBlackButtonColors
 
 // Блок задачи с локацией для экрана "Мой досуг"
 
@@ -50,7 +50,7 @@ fun PlaceToDoView(
             modifier = Modifier.weight(1f)
         ) {
             if (item.isImportant) {
-                Row (
+                Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
@@ -68,6 +68,7 @@ fun PlaceToDoView(
                     )
                 }
             }
+
             Text(
                 text = item.name,
                 fontSize = 19.sp,
@@ -75,13 +76,15 @@ fun PlaceToDoView(
                 color = colorResource(id = R.color.text),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
-            Row (
+
+            Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.location_icon),
                     contentDescription = "Локация"
                 )
+
                 Text(
                     text = item.placeName,
                     fontSize = 16.sp,
@@ -89,6 +92,7 @@ fun PlaceToDoView(
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
             }
+
             Text(
                 text = item.date,
                 fontSize = 16.sp,
@@ -100,12 +104,7 @@ fun PlaceToDoView(
                 onClick = {
                     navController.navigate("recommendation_screen/${item.placeId}")
                 },
-                colors = ButtonDefaults.buttonColors(
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                    colorResource(id = R.color.text),
-                ),
+                colors = getBlackButtonColors(),
             ) {
                 Text(
                     text = "К локации",
@@ -120,12 +119,10 @@ fun PlaceToDoView(
             contentDescription = "Удалить",
             modifier = Modifier
                 .padding(10.dp, 0.dp, 0.dp, 0.dp)
-                .clickable (
+                .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                ) {
-                    deleteItem()
-                }
+                ) { deleteItem() }
         )
     }
 }

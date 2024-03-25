@@ -26,10 +26,8 @@ import com.example.prodfinal.R
 import com.example.prodfinal.domain.model.UserModel
 
 @Composable
-fun ProfileView (
-    item: UserModel
-) {
-    Row (
+fun ProfileView(item: UserModel) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(
@@ -62,7 +60,7 @@ fun ProfileView (
             fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
             modifier = Modifier
                 .weight(1f)
-                .padding(10.dp, 0.dp, 0.dp, 0.dp)
+                .padding(start = 10.dp)
         )
     }
 }

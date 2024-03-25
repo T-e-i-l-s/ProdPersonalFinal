@@ -7,7 +7,6 @@ import kotlin.math.roundToInt
 
 class WeatherMapper {
     fun invoke(weather: WeatherModel): WeatherModel {
-        // Корректируем и дополняем необходимые данные, а затем возвращаем
         return WeatherModel(
             weather.city,
             weather.weather,

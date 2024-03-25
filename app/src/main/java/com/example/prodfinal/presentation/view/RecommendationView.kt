@@ -57,12 +57,11 @@ fun RecomendationView(
         if (recomendation.image == "") {
             NoPhotoView(
                 modifier = Modifier
-                .fillMaxWidth()
-                .height(128.dp)
-                .clip(RoundedCornerShape(16.dp))
+                    .fillMaxWidth()
+                    .height(128.dp)
+                    .clip(RoundedCornerShape(16.dp))
             )
         } else {
-            // Иконка локации
             AsyncImage(
                 model = recomendation.image,
                 contentDescription = recomendation.title,
@@ -82,8 +81,7 @@ fun RecomendationView(
         ) {
             Row {
                 Text(
-                    modifier = Modifier
-                        .padding(0.dp, 0.dp, 5.dp, 0.dp),
+                    modifier = Modifier.padding(end = 5.dp),
                     text = recomendation.title,
                     fontSize = 19.sp,
                     fontWeight = FontWeight(700),
@@ -91,6 +89,7 @@ fun RecomendationView(
                     maxLines = 1,
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
+
                 if (recomendation.category.size > 0) {
                     Text(
                         modifier = Modifier
@@ -106,6 +105,7 @@ fun RecomendationView(
                     )
                 }
             }
+
             if (recomendation.address.isNotEmpty()) {
                 Text(
                     text = recomendation.address,

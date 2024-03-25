@@ -15,8 +15,8 @@ class BudgetSource {
         index: Int,
         sum: String
     ): ArrayList<BudgetGoalModel> {
-        // Получаем список целей
         val goals = getGoals(context)
+
         // Отсекаем случай с неверным index
         if (index >= goals.size) {
             return goals
@@ -28,7 +28,6 @@ class BudgetSource {
         // Число, которое нужно прибавить
         val numValue = sum.toBigDecimalOrNull() ?: return goals
 
-        // Сохраняем изменения
         goals[index] = BudgetGoalModel(
             goal.name,
             goal.goal,
@@ -43,10 +42,8 @@ class BudgetSource {
             )
         }
 
-        // Сохраняем изменения
         saveGoals(context, goals)
 
-        // Возвращаем обновленную сумму полученных/потраченных средств
         return goals
     }
 
@@ -55,20 +52,17 @@ class BudgetSource {
         context: Context,
         index: Int
     ): ArrayList<BudgetGoalModel> {
-        // Получаем список целей
         val goals = getGoals(context)
+
         // Отсекаем случай с неверным index
         if (index >= goals.size) {
             return goals
         }
 
-        // Удаляем элемент
         goals.removeAt(index)
 
-        // Сохраняем изменения
         saveGoals(context, goals)
 
-        // Возвращаем обновленный список
         return goals
     }
 
@@ -77,13 +71,10 @@ class BudgetSource {
         context: Context,
         goal: BudgetGoalModel,
     ) {
-        // Получаем список целей
         val goals = getGoals(context)
 
-        // Добавляем элемент
         goals.add(goal)
 
-        // Сохраняем изменения
         saveGoals(context, goals)
     }
 
@@ -95,7 +86,7 @@ class BudgetSource {
         val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
         val goalsString = sharedPref.getString("goals", null) ?: return ArrayList()
 
-        // Переводим массива целей в ArrayList<BudgetGoalModel> и отдаем
+        // Переводим массива целей в ArrayList<BudgetGoalModel>
         val jsonArray = JSONArray(goalsString)
         val goals = ArrayList<BudgetGoalModel>()
         for(i in 0..<jsonArray.length()) {

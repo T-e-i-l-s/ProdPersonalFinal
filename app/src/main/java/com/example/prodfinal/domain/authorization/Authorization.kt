@@ -25,15 +25,12 @@ class Authorization {
                 if (username == usersList[i].username &&
                     passwordDecoded == Hash().decode(usersList[i].password)
                 ) { // Введенный пользователь найден
-                    // Сохраняем авторизованного пользователя в кеш
                     CurrentUserSource().saveCurrentUser(context, usersList[i])
-                    // Возвращаем true(пользователь найден)
                     onFinish(true)
-                    // Выходим из функции
                     return@getUsers
                 }
             }
-            // Возвращаем false(пользователь не найден)
+            // Введенный пользователь не найден
             onFinish(false)
         }
     }
@@ -70,7 +67,6 @@ class Authorization {
             return
         }
 
-        // Парсим все необходимые поля
         val json = JSONArray(data)
         val usersList = ArrayList<UserModel>()
         for (i in 0..<json.length()) {
@@ -88,7 +84,6 @@ class Authorization {
             )
         }
 
-        // Отдаем результат
         onFinish(usersList)
     }
 }

@@ -15,7 +15,7 @@ import com.example.prodfinal.R
 // Блок "Нет изображения" на случай отстуствия изображения в api
 
 @Composable
-fun NoPhotoView (modifier: Modifier) {
+fun NoPhotoView(modifier: Modifier) {
     Box(
         modifier = modifier
             .background(colorResource(id = R.color.no_image)),

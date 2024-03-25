@@ -24,15 +24,12 @@ class RecommendationsApi {
                 "Clocation%2" +
                 "Cfsq_id&ll=$lat%2C$lon"
 
-        // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
 
-        // Создаем запрос
         val stringRequest = object : StringRequest(
             Method.GET,
             url,
             { response ->
-                // Обрабатываем результат и отдаем
                 handleResponse(response, onFinish)
             },
             {}
@@ -46,7 +43,6 @@ class RecommendationsApi {
             }
         }
 
-        // Добавляем запрос в очередь
         requestQueue.add(stringRequest)
     }
 
@@ -55,21 +51,15 @@ class RecommendationsApi {
         response: String,
         onFinish: (MutableList<ShortRecommendationModel>) -> Unit
     ) {
-        // Создаем новый список
         val recommendations = mutableListOf<ShortRecommendationModel>()
-        // Получаем json из ответа апи
         val json = JSONObject(response)
-        // Получаем json массив мест
         val recommendationsArray = json.getJSONArray("results")
         // Проходим по всем элементам jsonArray и переводим их в ArrayList
         for (i in 0..<recommendationsArray.length()) {
-            // Получаем json одной из локаций и обрабатываем
             val recommendation: ShortRecommendationModel =
                 handleRecommendationJson(recommendationsArray.getJSONObject(i))
-            // Добавляем элемент к списку
             recommendations.add(recommendation)
         }
-        // Возвращаем список мест
         onFinish(recommendations)
     }
 
@@ -77,7 +67,6 @@ class RecommendationsApi {
     private fun handleRecommendationJson(
         response: JSONObject
     ): ShortRecommendationModel {
-        // Парсим все необходимое
         val id = response.getString("fsq_id")
         val title = response.getString("name")
 
@@ -98,7 +87,6 @@ class RecommendationsApi {
         val locationObj = response.getJSONObject("location")
         val address = locationObj.getString("formatted_address")
 
-        // Отдаем
         return ShortRecommendationModel(
             id,
             title,

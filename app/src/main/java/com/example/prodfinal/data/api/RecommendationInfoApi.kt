@@ -24,15 +24,12 @@ class RecommendationInfoApi {
                 "categories%2C" +
                 "email"
 
-        // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
 
-        // Создаем запрос
         val stringRequest = object : StringRequest(
             Method.GET,
             url,
             { response ->
-                // Обрабатываем результат и отдаем
                 handleResponse(JSONObject(response), onFinish)
             },
             {}
@@ -46,7 +43,6 @@ class RecommendationInfoApi {
             }
         }
 
-        // Добавляем запрос в очередь
         requestQueue.add(stringRequest)
     }
 
@@ -55,7 +51,6 @@ class RecommendationInfoApi {
         response: JSONObject,
         onFinish: (FullRecommendationModel) -> Unit
     ) {
-        // Парсим все необходимое
         val id = response.getString("fsq_id")
         val title = response.getString("name")
         var email: String? = null
@@ -82,7 +77,6 @@ class RecommendationInfoApi {
         val locationObj = response.getJSONObject("location")
         val address = locationObj.getString("formatted_address")
 
-        // Отдаем
         onFinish(
             FullRecommendationModel(
                 id,

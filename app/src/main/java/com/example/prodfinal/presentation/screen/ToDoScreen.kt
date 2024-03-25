@@ -46,12 +46,12 @@ fun ToDoScreen(context: Context, navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.background))
-            .padding(10.dp, 0.dp, 10.dp, 0.dp)
+            .padding(horizontal = 10.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp, 10.dp, 0.dp, 10.dp),
+                .padding(vertical = 10.dp),
         ) {
             Text(
                 text = "Мой досуг",
@@ -61,6 +61,7 @@ fun ToDoScreen(context: Context, navController: NavController) {
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display)),
                 modifier = Modifier.weight(1f)
             )
+
             Image(
                 painter = painterResource(id = R.drawable.plus_icon),
                 contentDescription = "Добавить",
@@ -76,7 +77,7 @@ fun ToDoScreen(context: Context, navController: NavController) {
 
         LazyColumn {
             itemsIndexed(todoList.value) { index, item ->
-                Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)) {
+                Box(modifier = Modifier.padding(bottom = 10.dp)) {
                     if (item.mode == ToDoState.TEXT) {
                         TextToDoView(item) {
                             todoList.value = ToDoSource().deleteToDo(context, index)

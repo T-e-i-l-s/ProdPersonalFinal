@@ -33,7 +33,6 @@ import com.example.prodfinal.domain.state.LoadingState
 
 @Composable
 fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,16 +43,12 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         when (status) {
-            LoadingState.READY -> { // Если данные получены
-
+            LoadingState.READY -> {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ) {
-
-                    // Иконка погоды
                     AsyncImage(
                         model = "https://openweathermap.org/img/wn/${weatherItem.icon}@2x.png",
                         contentDescription = weatherItem.weather,
@@ -64,22 +59,17 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
 
                     Column(
                         modifier = Modifier
-                            .padding(
-                                10.dp,
-                                0.dp,
-                                0.dp,
-                                0.dp
-                            )
+                            .padding(start = 10.dp)
                             .weight(1f)
                     ) {
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.location_icon),
                                 contentDescription = "Локация"
                             )
-                            // Локация
+
                             Text(
                                 text = weatherItem.city,
                                 color = colorResource(id = R.color.text),
@@ -89,7 +79,7 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                             )
                         }
-                        // Температура
+
                         Text(
                             text = weatherItem.currentTemperature,
                             color = colorResource(id = R.color.text),
@@ -97,7 +87,7 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                             fontWeight = FontWeight(700),
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
-                        // Мин и макс температура
+
                         Text(
                             text = "От ${weatherItem.minTemperature} " +
                                     "до ${weatherItem.maxTemperature}",
@@ -105,37 +95,33 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
-                        // Ощущается как
+
                         Text(
                             text = weatherItem.feelsLike,
                             color = colorResource(id = R.color.text),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
-                        // Название погоды(ясно, облачно и т.д.)
+
                         Text(
                             text = weatherItem.weather,
                             color = colorResource(id = R.color.text),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                         )
-
                     }
-
                 }
-
             }
-            LoadingState.LOADING -> { // Если данные загружаются
 
+            LoadingState.LOADING -> {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(10.dp),
                     color = colorResource(id = R.color.weather),
                     trackColor = colorResource(id = R.color.background),
                 )
-
             }
-            else -> { // Если произошла ошибка
 
+            else -> {
                 Text(
                     text = "Невозможно получить данные",
                     color = colorResource(id = R.color.text),
@@ -143,7 +129,6 @@ fun WeatherView(weatherItem: WeatherModel, status: LoadingState) {
                     textAlign = TextAlign.Center,
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
-
             }
         }
 

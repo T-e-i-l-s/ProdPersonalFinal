@@ -21,9 +21,7 @@ import com.example.prodfinal.domain.model.UserModel
 // Блок с информацией о пользователе
 
 @Composable
-fun UserInfoView (
-    item: UserModel,
-) {
+fun UserInfoView(item: UserModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,6 +38,7 @@ fun UserInfoView (
             fontWeight = FontWeight(700),
             fontFamily = FontFamily(Font(R.font.wix_madefor_display))
         )
+
         Row {
             Text(
                 text = "Почта: ",
@@ -48,6 +47,7 @@ fun UserInfoView (
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.mail,
                 fontSize = 16.sp,
@@ -66,6 +66,7 @@ fun UserInfoView (
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.phoneNumber,
                 fontSize = 16.sp,
@@ -84,6 +85,7 @@ fun UserInfoView (
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.address,
                 fontSize = 16.sp,
@@ -102,6 +104,7 @@ fun UserInfoView (
                 fontWeight = FontWeight(600),
                 fontFamily = FontFamily(Font(R.font.wix_madefor_display))
             )
+
             Text(
                 text = item.birthday,
                 fontSize = 16.sp,

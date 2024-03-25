@@ -9,7 +9,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -21,7 +20,7 @@ import com.example.prodfinal.R
 // Скелетон фотограции для экрана с информацией о рекомендации
 
 @Composable
-fun ImageSkeletonView () {
+fun ImageSkeletonView(modifier: Modifier) {
     val transition = rememberInfiniteTransition("")
 
     // Анимация для градиента
@@ -49,8 +48,7 @@ fun ImageSkeletonView () {
     )
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier

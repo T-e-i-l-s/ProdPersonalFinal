@@ -18,10 +18,8 @@ class RandomUserApi {
         // URL запроса
         val url = "https://randomuser.me/api/"
 
-        // Создаем очередь для запросов
         val requestQueue = Volley.newRequestQueue(context)
 
-        // Создаем запрос
         val stringRequest = StringRequest(
             Request.Method.GET,
             url,
@@ -32,13 +30,11 @@ class RandomUserApi {
             {}
         )
 
-        // Добавляем запрос в очередь
         requestQueue.add(stringRequest)
     }
 
     // Функция, которая обрабатывает json
     private fun handleResponse(response: String, onFinish: (response: UserModel) -> Unit) {
-        // Парсим все необходимое
         val json = JSONObject(response).getJSONArray("results").getJSONObject(0)
 
         val loginInfo = json.getJSONObject("login")
@@ -58,7 +54,6 @@ class RandomUserApi {
         val photoObj = json.getJSONObject("picture")
         val photo = photoObj.getString("medium")
 
-        // Отдаем
         onFinish(
             UserModel(
                 username,

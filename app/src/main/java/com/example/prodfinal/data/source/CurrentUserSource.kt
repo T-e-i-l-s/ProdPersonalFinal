@@ -18,10 +18,9 @@ class CurrentUserSource {
     fun getCurrentUser(context: Context): UserModel {
         // Получаем данные о пользователе из SharedPreferences
         val sharedPref = context.getSharedPreferences("LifestyleHUB", Context.MODE_PRIVATE)
-        val user =
-            sharedPref.getString("current_user", "") ?: return UserModel("", "", "", "", "", "", "")
+        val user = sharedPref.getString("current_user", "") ?:
+            return UserModel("", "", "", "", "", "", "")
 
-        // Переводим данные о пользователе в json и отдаем
         val json = JSONObject(user)
         return UserModel(
             json.getString("username"),

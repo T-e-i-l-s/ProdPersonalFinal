@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -40,6 +39,7 @@ import com.example.prodfinal.domain.authorization.Hash
 import com.example.prodfinal.domain.model.UserModel
 import com.example.prodfinal.domain.state.AuthState
 import com.example.prodfinal.navigation.stackCurrentRoute
+import com.example.prodfinal.presentation.style.getBlackButtonColors
 import com.example.prodfinal.presentation.style.getTextFieldColors
 
 // Данные с экрана "Создать аккаунт"
@@ -56,7 +56,8 @@ private val loginUsername = mutableStateOf("")
 private val loginPassword = mutableStateOf("")
 private val isCorrect = mutableStateOf(true)
 
-fun authorize (context: Context, navController: NavController, mode: AuthState,) {
+// Функция, которая обрабатывает введенные данные и выполняет необходимые действия
+fun authorize(context: Context, navController: NavController, mode: AuthState) {
     if (mode == AuthState.LOGIN) { // Вход
         // Проверяем корректность введеных данных
         Authorization().checkAccess(
@@ -96,16 +97,17 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
     }
 
     LaunchedEffect(true) {
+        // Получаем режим авторизации(вход или регистрация)
         mode.value = AuthState.valueOf(
-            "" + navController
-                .currentBackStackEntry
-                ?.arguments
-                ?.getString("mode")
+            "" + navController.currentBackStackEntry?.arguments?.getString("mode")
         )
+        // В зависимости от режима авторизации подготавливаем поля
         if (mode.value == AuthState.SIGNIN) {
+            // Делаем запрос на получение случайного пользователя
             RandomUserRepositoryImpl().getRandomUser(
                 context
             ) { response ->
+                // Заполняем поля регистрации полученными данными
                 signinUsername.value = response.username
                 signinPhoto.value = response.photo
                 signinMail.value = response.mail
@@ -115,6 +117,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
                 signinPassword.value = response.password
             }
         } else {
+            // Очищаем поля для входа
             loginUsername.value = ""
             loginPassword.value = ""
             isCorrect.value = true
@@ -127,6 +130,7 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
             .background(colorResource(id = R.color.background))
             .padding(10.dp),
     ) {
+        // Кнопка "Назад"
         Image(
             painter = painterResource(id = R.drawable.arrow_left_icon),
             contentDescription = "Назад",
@@ -144,54 +148,44 @@ fun AuthorisationScreen(context: Context, navController: NavController) {
         Column(
             modifier = Modifier
                 .background(colorResource(id = R.color.background))
-                .weight(1f),
+                .weight(1f)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Column(
+            // Текст над блоком инпутов
+            Text(
+                text = when (mode.value) {
+                    AuthState.LOGIN -> "Войти"
+                    AuthState.SIGNIN -> "Создать аккаунт"
+                },
+                color = colorResource(id = R.color.text),
+                fontSize = 19.sp,
+                fontWeight = FontWeight(700),
+                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
+            )
+
+            // В зависимости от режима авторизации отображаем блок инпутов
+            if (mode.value == AuthState.LOGIN) {
+                LogIn()
+            } else if (mode.value == AuthState.SIGNIN) {
+                SignIn()
+            }
+
+            Button(
                 modifier = Modifier
-                    .weight(1f, false)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(top = 10.dp)
+                    .fillMaxWidth(),
+                onClick = { authorize(context, navController, mode.value) },
+                colors = getBlackButtonColors(),
             ) {
                 Text(
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp),
-                    text = when (mode.value) {
-                        AuthState.LOGIN -> "Войти"
-                        AuthState.SIGNIN -> "Создать аккаунт"
-                    },
-                    color = colorResource(id = R.color.text),
-                    fontSize = 19.sp,
-                    fontWeight = FontWeight(700),
+                    modifier = Modifier.padding(5.dp),
+                    text = "Далее",
+                    color = colorResource(id = R.color.background),
+                    fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.wix_madefor_display))
                 )
-
-                if (mode.value == AuthState.LOGIN) {
-                    LogIn()
-                } else if (mode.value == AuthState.SIGNIN) {
-                    SignIn()
-                }
-
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = {
-                        authorize(context, navController, mode.value)
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                        colorResource(id = R.color.text),
-                    ),
-                ) {
-                    Text(
-                        modifier = Modifier.padding(5.dp),
-                        text = "Далее",
-                        color = colorResource(id = R.color.background),
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                    )
-                }
             }
         }
     }
@@ -203,6 +197,7 @@ fun LogIn() {
     if (!isCorrect.value) {
         Text(
             modifier = Modifier
+                .padding(top = 10.dp)
                 .fillMaxWidth(),
             text = "Неверный логин или пароль",
             color = colorResource(id = R.color.error),
@@ -212,174 +207,97 @@ fun LogIn() {
         )
     }
 
-    Column(
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 10.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = loginUsername.value,
-            onValueChange = {
-                isCorrect.value = true
-                loginUsername.value = it
-            },
-            label = {
-                Text(
-                    text = "Имя",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp)
-        )
-    }
-    Column(
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = loginUsername.value,
+        onValueChange = {
+            isCorrect.value = true
+            loginUsername.value = it
+        },
+        label = { Text(text = "Имя",fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp)
+    )
+
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = "*".repeat(loginPassword.value.length),
-            onValueChange = {
-                isCorrect.value = true
-                loginPassword.value = it
-            },
-            label = {
-                Text(
-                    text = "Пароль",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = "*".repeat(loginPassword.value.length),
+        onValueChange = {
+            isCorrect.value = true
+            loginPassword.value = it
+        },
+        label = { Text(text = "Пароль", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 }
 
 // Блок инпутов в режиме регистрации
 @Composable
 fun SignIn() {
-    Column(
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = signinUsername.value,
-            onValueChange = {
-                signinUsername.value = it
-            },
-            label = {
-                Text(
-                    text = "Имя",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = signinUsername.value,
+        onValueChange = { signinUsername.value = it },
+        label = { Text(text = "Имя", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Column(
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = signinMail.value,
-            onValueChange = {
-                signinMail.value = it
-            },
-            label = {
-                Text(
-                    "Почта",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = signinMail.value,
+        onValueChange = { signinMail.value = it },
+        label = { Text("Почта", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Column(
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = signinBirthday.value,
-            onValueChange = {
-                signinBirthday.value = it
-            },
-            label = {
-                Text(
-                    text = "День рождения",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = signinBirthday.value,
+        onValueChange = { signinBirthday.value = it },
+        label = { Text(text = "День рождения", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Column(
+    TextField(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = signinAddress.value,
-            onValueChange = {
-                signinAddress.value = it
-            },
-            label = {
-                Text(
-                    text = "Адрес",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        value = signinAddress.value,
+        onValueChange = { signinAddress.value = it },
+        label = { Text(text = "Адрес", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Column(
-        modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = signinPhone.value,
-            onValueChange = {
-                signinPhone.value = it
-            },
-            label = {
-                Text(
-                    text = "Телефон",
-                    fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-                )
-            },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = signinPhone.value,
+        onValueChange = { signinPhone.value = it },
+        label = { Text(text = "Телефон", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 
-    Column(
-        modifier = Modifier
-            .padding(0.dp, 0.dp, 0.dp, 10.dp)
-    ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = "*".repeat(signinPassword.value.length),
-            onValueChange = {
-                signinPassword.value = it
-            },
-            label = { Text(
-                text = "Пароль",
-                fontFamily = FontFamily(Font(R.font.wix_madefor_display))
-            ) },
-            colors = getTextFieldColors(),
-            shape = RoundedCornerShape(16.dp),
-        )
-    }
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = "*".repeat(signinPassword.value.length),
+        onValueChange = { signinPassword.value = it },
+        label = { Text(text = "Пароль", fontFamily = FontFamily(Font(R.font.wix_madefor_display))) },
+        colors = getTextFieldColors(),
+        shape = RoundedCornerShape(16.dp),
+    )
 }

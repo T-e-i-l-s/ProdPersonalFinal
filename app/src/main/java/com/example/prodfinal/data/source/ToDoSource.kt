@@ -17,24 +17,11 @@ class ToDoSource {
         context: Context,
         newItem: ToDoItemModel
     ) {
-        // Получаем список дел через класс GetToDoList
         val list = getToDo(context)
 
-        // Добавляем новый элемент в список
         list.add(newItem)
 
-        // Получаем json обновленного списка дел
-        val gson = Gson()
-        val jsonList = gson.toJson(list)
-
-        // Сохраняем изменения в SharedPreferences
-        val sharedPreferences = context.getSharedPreferences(
-            "LifestyleHUB",
-            Context.MODE_PRIVATE
-        )
-        sharedPreferences.edit()
-            .putString("todo_list", jsonList)
-            .apply()
+        saveToDoList(context, list)
     }
 
     // Функция, которая получает список дел и обрабатывает
@@ -68,9 +55,38 @@ class ToDoSource {
             return list
         }
 
-        // Удаляем элемент из списка
         list.removeAt(index)
 
+        saveToDoList(context, list)
+
+        return list
+    }
+
+    /*
+    Функция, которая получает json списка дел и
+    переводит его в ArrayList
+    */
+    private fun decryptJson(jsonList: String): ArrayList<ToDoItemModel> {
+        val list = ArrayList<ToDoItemModel>()
+        val jsonArray = JSONArray(jsonList)
+        // Проходим по всем элементам jsonArray и переводим их в ArrayList
+        for (i in 0..<jsonArray.length()) {
+            val element = jsonArray.getJSONObject(i)
+            val item = ToDoItemModel(
+                ToDoState.valueOf(element.getString("mode").uppercase()),
+                element.getBoolean("isImportant"),
+                element.getString("name"),
+                element.getString("description"),
+                element.getString("date"),
+                element.getString("placeId"),
+                element.getString("placeName"),
+            )
+            list.add(item)
+        }
+        return list
+    }
+
+    private fun saveToDoList(context: Context, list: ArrayList<ToDoItemModel>) {
         // Получаем json обновленного списка дел
         val gson = Gson()
         val jsonList = gson.toJson(list)
@@ -83,36 +99,5 @@ class ToDoSource {
         sharedPreferences.edit()
             .putString("todo_list", jsonList)
             .apply()
-
-        // Возвращаем обновленный список
-        return list
-    }
-
-    /*
-    Функция, которая получает json списка дел и
-    переводит его в ArrayList
-    */
-    private fun decryptJson(jsonList: String): ArrayList<ToDoItemModel> {
-        val list = ArrayList<ToDoItemModel>() // Создаем новый ArrayList
-        val jsonArray = JSONArray(jsonList) // Получаем JSONArray из сроки
-        // Проходим по всем элементам jsonArray и переводим их в ArrayList
-        for (i in 0..<jsonArray.length()) {
-            // Парсим элемент массива
-            val element = jsonArray.getJSONObject(i)
-            // Переводим в ToDoItemModel
-            val item = ToDoItemModel(
-                ToDoState.valueOf(element.getString("mode").uppercase()),
-                element.getBoolean("isImportant"),
-                element.getString("name"),
-                element.getString("description"),
-                element.getString("date"),
-                element.getString("placeId"),
-                element.getString("placeName"),
-            )
-            // Добавляем полученный ToDoItemModel в ArrayList
-            list.add(item)
-        }
-        // Возвращаем ArrayList
-        return list
     }
 }
