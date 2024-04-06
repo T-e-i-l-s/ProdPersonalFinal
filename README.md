@@ -1,3 +1,5 @@
+## Индивидуальный (1 финальный) тур олимпиады PROD
+
 # LifestyleHUB
 
 <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/MainScreen.png" 
@@ -108,7 +110,3 @@ LifestyleHUB – это приложение для формирования с�
   * Gson
   * Volley
   * Coil
-
-## Ссылки
-  * [Документация](https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/wiki/Documentation)
-  * [Обоснование принятых решений](https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/wiki/RFC)
