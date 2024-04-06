@@ -2,16 +2,16 @@
 
 # LifestyleHUB
 
-<img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/MainScreen.png" 
+<img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/MainScreen.png" 
 alt="MainScreen" 
 width="200"/>
-<img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/ToDoScreen.png" 
+<img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/ToDoScreen.png" 
 alt="ToDoScreen" 
 width="200"/>
-<img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/BudgetScreen.png" 
+<img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/BudgetScreen.png" 
 alt="BudgetScreen" 
 width="200"/>
-<img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/UserInfoScreen.png" 
+<img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/UserInfoScreen.png" 
 alt="UserInfoScreen" 
 width="200"/>
 
@@ -28,10 +28,10 @@ LifestyleHUB – это приложение для формирования с�
 
   * Планер бюджета
     
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/GoalView1.jpg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/GoalView1.jpg" 
     alt="Budget" 
     width="300"/>
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/GoalView2.jpg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/GoalView2.jpg" 
     alt="Budget" 
     width="300"/>
 
@@ -41,7 +41,7 @@ LifestyleHUB – это приложение для формирования с�
 
   * Курс валют
 
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/ValuteView.jpg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/ValuteView.jpg" 
     alt="ValuteExchangeRate" 
     width="300"/>
     
@@ -55,7 +55,7 @@ LifestyleHUB – это приложение для формирования с�
 
   * Приоритизация задач в "Мой досуг"
 
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/ImportantTasks.png" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/ImportantTasks.png" 
     alt="ValuteExchangeRate" 
     width="300"/>
     
@@ -65,7 +65,7 @@ LifestyleHUB – это приложение для формирования с�
 
   * Skeleton во время загрузки блоков рекомендации(мест рядом), фотографий, курса валют
 
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/Loading.png" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/Loading.png" 
     alt="Skeleton" 
     width="150"/>
 
@@ -79,10 +79,10 @@ LifestyleHUB – это приложение для формирования с�
 
   * Заглушки "Нет изображения" у фотографий
 
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/NoImageRecommendationInfoScreen.jpg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/NoImageRecommendationInfoScreen.jpg" 
     alt="NoImage" 
     width="200"/>
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/NoImageRecommendationView.jpg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/NoImageRecommendationView.jpg" 
     alt="NoImage" 
     width="200"/>
 
@@ -92,7 +92,7 @@ LifestyleHUB – это приложение для формирования с�
 
   * Иконка приложения
 
-    <img src="https://github.com/Central-University-IT-prod/mobile-T-e-i-l-s/blob/develop/screenshots/LifestyleHUB.svg" 
+    <img src="https://github.com/T-e-i-l-s/ProdPersonalFinal/blob/main/screenshots/LifestyleHUB.svg" 
     alt="Icon" 
     width="200"/>
 
